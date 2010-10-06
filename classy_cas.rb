@@ -28,10 +28,14 @@ get "/login" do
   elsif @gateway
     if @service_url
       if sso_session
-        st = ServiceTicket.new(@service_url, sso_session.username)
+        st = ServiceTicket.new(params[:service], sso_session.username)
+        st.save!(@redis)
         redirect_url = @service_url.clone
-        redirect_url.query_values = @service_url.query_values.merge(:ticket => st.ticket)
-      
+        if @service_url.query_values.nil?
+          redirect_url.query_values = @service_url.query_values = {:ticket => st.ticket}
+        else
+          redirect_url.query_values = @service_url.query_values.merge(:ticket => st.ticket)
+        end
         redirect redirect_url.to_s, 303
       else
         redirect @service_url.to_s, 303
@@ -43,10 +47,14 @@ get "/login" do
   else
     if sso_session
       if @service_url
-        st = ServiceTicket.new(@service_url, sso_session.username)
+        st = ServiceTicket.new(params[:service], sso_session.username)
+        st.save!(@redis)
         redirect_url = @service_url.clone
-        redirect_url.query_values = @service_url.query_values.merge(:ticket => st.ticket)
-      
+        if @service_url.query_values.nil?
+          redirect_url.query_values = @service_url.query_values = {:ticket => st.ticket}
+        else
+          redirect_url.query_values = @service_url.query_values.merge(:ticket => st.ticket)
+        end
         redirect redirect_url.to_s, 303
       else
         return haml :already_logged_in
@@ -70,6 +78,11 @@ post "/login" do
   redirect "/login", 303 unless username && password && login_ticket
   
   if UserStore.authenticate(username, password)
+    tgt = TicketGrantingTicket.new(username)
+    tgt.save!(@redis)
+    cookie = tgt.to_cookie(request.host)
+    response.set_cookie(cookie[0], cookie[1])
+    
     if service_url && !warn
       st = ServiceTicket.new(service_url, username)
       st.save!(@redis)
@@ -96,7 +109,7 @@ get %r{(proxy|service)Validate} do
         render_validation_error(:invalid_service)
       end
     else
-      render_validation_error(:invalid_ticket)
+      render_validation_error(:invalid_ticket, "ticket #{ticket} not recognized")
     end
   else
     render_validation_error(:invalid_request)
@@ -119,10 +132,11 @@ def service_ticket
   @service_ticket ||= ServiceTicket.find!(params[:ticket], @redis)
 end
 
-def render_validation_error(code)
+def render_validation_error(code, message = nil)
   xml = Nokogiri::XML::Builder.new do |xml|
     xml.serviceResponse("xmlns:cas" => "http://www.yale.edu/tp/cas") {
-      xml['cas'].authenticationFailure(:code => code.to_s.upcase)
+      xml['cas'].authenticationFailure(message, :code => code.to_s.upcase){
+      }
     }
   end
   namespace_hack(xml)

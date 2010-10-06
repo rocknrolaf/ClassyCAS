@@ -29,7 +29,7 @@ class CasServerTest < Test::Unit::TestCase
     @cookie = "#{cookie[0]}=#{cookie[1][:value]}"
     @tgt
   end
-  
+
   def assert_valid_xml(xml)
     # assert @xsd.validate(xml)
     assert_match /cas:serviceResponse/, xml.root.to_s
@@ -37,9 +37,9 @@ class CasServerTest < Test::Unit::TestCase
   def assert_invalid_request_xml_response(last_response)
     assert_equal("application/xml", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
-    
+
     assert_valid_xml(xml)
-    
+
     assert !xml.xpath("//cas:authenticationFailure").empty?
     assert_equal("INVALID_REQUEST", xml.xpath("//cas:authenticationFailure/@code")[0].content)
   end
@@ -128,6 +128,16 @@ class CasServerTest < Test::Unit::TestCase
               assert_equal Addressable::URI.parse(@test_service_url).path,
                 Addressable::URI.parse(last_response.headers["Location"]).path
             end
+
+            should 'persist the ticket for retrieval later' do
+              get "/login", {:service => @test_service_url}, "HTTP_COOKIE" => @cookie
+              # post "/login", @params
+              ticket_number = last_response.inspect[/ST-[0-9]+/]
+              st = ServiceTicket.find!(ticket_number, @redis)
+              assert_not_nil st
+              assert st.valid_for_service?(@test_service_url)
+            end
+
           end
 
           # Not specified, but good sanity check
@@ -200,6 +210,15 @@ class CasServerTest < Test::Unit::TestCase
                 assert last_response.redirect?
                 assert_equal Addressable::URI.parse(@test_service_url).path,
                   Addressable::URI.parse(last_response.headers["Location"]).path
+              end
+
+              should 'persist the ticket for retrieval later' do
+                get "/login", @params, "HTTP_COOKIE" => @cookie
+                # post "/login", @params
+                ticket_number = last_response.inspect[/ST-[0-9]+/]
+                st = ServiceTicket.find!(ticket_number, @redis)
+                assert_not_nil st
+                assert st.valid_for_service?(@test_service_url)
               end
 
               # MAY
@@ -317,6 +336,11 @@ class CasServerTest < Test::Unit::TestCase
       context "response" do
         context "successful login:" do
           setup { @params = {:username => "quentin", :password => "testpassword", :lt => @lt.ticket} }
+
+          should 'set a ticket-granting cookie' do
+            post "/login", @params
+            assert_match /tgt=TGC-/, last_response.headers.to_s
+          end
 
 
           context "with a 'service' parameter" do
