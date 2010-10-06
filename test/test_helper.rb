@@ -2,6 +2,9 @@ $:.unshift(File.dirname(__FILE__) + "/../")
 
 require 'test/unit'
 require 'rubygems'
+require 'bundler'
+Bundler.setup(:default, :test)
+
 require 'shoulda'
 require 'ruby-debug'
 require 'redis'
