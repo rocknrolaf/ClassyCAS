@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + "/../test_helper"
 require File.dirname(__FILE__) + "/../../classy_cas"
+require "rack/flash/test"
 
 set :environment, :test
 
@@ -32,7 +33,7 @@ class CasServerTest < Test::Unit::TestCase
 
   def assert_valid_xml(xml)
     # assert @xsd.validate(xml)
-    assert_match /cas:serviceResponse/, xml.root.to_s
+    assert_match(/cas:serviceResponse/, xml.root.to_s)
   end
   def assert_invalid_request_xml_response(last_response)
     assert_equal("application/xml", last_response.content_type)
@@ -339,7 +340,7 @@ class CasServerTest < Test::Unit::TestCase
 
           should 'set a ticket-granting cookie' do
             post "/login", @params
-            assert_match /tgt=TGC-/, last_response.headers.to_s
+            assert_match(/tgt=TGC-/, last_response.headers.to_s)
           end
 
 
@@ -432,18 +433,40 @@ class CasServerTest < Test::Unit::TestCase
     context "/logout" do
 
       setup { sso_session_for("quentin") }
-      
+
       should 'destroy the ticket granting ticket' do
         assert_not_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
-
-
         get '/logout', '',"HTTP_COOKIE" => @cookie
         assert_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
       end
-      
-      
-      context "parameters" do
+
+      #not in protocol but inferred
+      should 'display a flash message to the user stating they are logged out' do
+        get '/logout', '',"HTTP_COOKIE" => @cookie
+        assert_match(/Logout Successful/, last_response.body)
+      end
+
+      #not in protocol but inferred
+      should 'show login page' do
+        get '/logout', '',"HTTP_COOKIE" => @cookie
+        assert_have_selector "input[name='username']"
+        assert_have_selector "input[name='password']"
+      end
+
+      context "optional url parameter" do
+        setup do 
+          get '/logout', {:url => 'http://myreturn.app'},"HTTP_COOKIE" => @cookie
+        end
         
+        must 'display a page stating the user has been logged out' do          
+          msg = "The application you just logged out of has provided a link it would like you to follow."
+          assert_match msg, last_response.body
+        end
+        
+        should 'provide a link to the provided URL' do
+          msg = "Please <a href=\"http://myreturn.app\">click here</a> to access <a href=\"http://myreturn.app\">http://myreturn.app</a>"
+          assert_match msg, last_response.body
+        end
       end
 
       # 2.3.3

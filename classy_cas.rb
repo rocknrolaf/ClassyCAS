@@ -7,13 +7,13 @@ require 'redis'
 require 'haml'
 require 'addressable/uri'
 require 'nokogiri'
-
+require 'rack-flash'
 require 'lib/login_ticket'
 require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
-
+use Rack::Flash
 configure do
   if ENV['RACK_ENV'] == 'production'
     require 'redis'
@@ -135,9 +135,18 @@ end
 
 
 get '/logout' do
+  url = params[:url]
   if sso_session
     @sso_session.destroy!(@redis)
+    flash.now[:success] = "Logout Successful."
+    if url
+      msg = "The application you just logged out of has provided a link it would like you to follow."
+      msg += "Please <a href=\"#{url}\">click here</a> to access <a href=\"#{url}\">#{url}</a>"      
+      flash.now[:notice] = msg
+    end
   end
+  @login_ticket = LoginTicket.create!(@redis)
+  haml :login
 end
 
 
