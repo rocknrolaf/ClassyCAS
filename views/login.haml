@@ -8,7 +8,6 @@
   %input{:name => "lt", :type => "hidden", :value => @login_ticket.ticket}
   %input{:name => "warn", :type => "hidden"}
   %p
-    %input#classy-submit{:name => "login", :type => "submit"}
   - if @service_url
     %input{:name => "service", :type => "hidden", :value => @service_url}
   %input{:type => "submit", :value => "Submit", :class => "button"}

@@ -430,7 +430,20 @@ class CasServerTest < Test::Unit::TestCase
 
     # 2.3
     context "/logout" do
+
+      setup { sso_session_for("quentin") }
+      
+      should 'destroy the ticket granting ticket' do
+        assert_not_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
+
+
+        get '/logout', '',"HTTP_COOKIE" => @cookie
+        assert_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
+      end
+      
+      
       context "parameters" do
+        
       end
 
       # 2.3.3

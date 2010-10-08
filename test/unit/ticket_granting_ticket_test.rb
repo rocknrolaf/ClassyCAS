@@ -13,12 +13,18 @@ class TicketGrantingTicketTest < Test::Unit::TestCase
     should "be able to retrieve the username" do
       assert_equal("quentin", @tgt.username)
 
-      tgt2 = TicketGrantingTicket.validate!(@tgt.ticket, @redis)
+      tgt2 = TicketGrantingTicket.validate(@tgt.ticket, @redis)
       assert_equal("quentin", @tgt.username)
     end
     
     should "return a ticket" do
       assert_not_nil @tgt.ticket
+    end
+    
+    should "be able to destroy itself" do
+      assert_not_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
+      @tgt.destroy!(@redis)
+      assert_nil TicketGrantingTicket.validate(@tgt.ticket, @redis)
     end
   end
 end

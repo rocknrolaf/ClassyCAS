@@ -1,20 +1,25 @@
 class TicketGrantingTicket
   class << self
-    def validate!(ticket, store)
+    def validate(ticket, store)
       if ticket && username = store[ticket]
-        new(username)
+        new(username, ticket)
       end
     end
   end
   
   attr_reader :username
   
-  def initialize(user)
+  def initialize(user, ticket = nil)
     @username = user
+    @ticket = ticket
   end
     
   def ticket
     @ticket ||= "TGC-#{rand(100000000000000000)}".to_s
+  end
+  
+  def destroy!(store)
+    store.del self.ticket
   end
   
   def save!(store)
