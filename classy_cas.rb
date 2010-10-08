@@ -14,8 +14,14 @@ require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
 
+configure do
+  require 'redis'
+  uri = URI.parse('redis://heroku:60805d87e9dc1626bd64928253407933@goosefish.redistogo.com:9787/')
+  REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+end
 before do
-    @redis ||= Redis.new
+    # @redis ||= Redis.new
+    @redis = REDIS
 end
 
 
