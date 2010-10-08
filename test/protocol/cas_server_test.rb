@@ -263,7 +263,6 @@ class CasServerTest < Test::Unit::TestCase
           must "be submitted through the HTTP POST method" do
             get "/login"
             assert_match(/method='post'/, last_response.body)
-            assert_have_selector "input[class='button']"
           end
 
 
@@ -415,12 +414,12 @@ class CasServerTest < Test::Unit::TestCase
 
           # RECOMMENDED
           # Will implement with some kind of flash message
-          # should "display an error message describing why login failed" do
-          #   post "/login"
-          #   follow_redirect!
-          #
-          #   assert_match /username required/, last_response.body
-          # end
+          should "display an error message describing why login failed" do
+            @params = {:username => "quentin", :password => "badpassword", :lt => @lt.ticket}
+            post "/login", @params
+            follow_redirect!
+            assert_match /Login was not successful/, last_response.body
+          end
 
           # RECOMMENDED
           should "provide an opportunity to attempt to login again"

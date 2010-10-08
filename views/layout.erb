@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0037)http://pilu.github.com/web-app-theme/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Classy CAS</title>
+  <link rel="stylesheet" href="stylesheets/base.css" type="text/css" media="screen">
+  <link rel="stylesheet" id="current-theme" href="stylesheets/drastic-dark.css" type="text/css" media="screen">
+  <script type="text/javascript" charset="utf-8" src="javascripts/jquery-1.3.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="javascripts/jquery.scrollTo.js"></script>
+  <script type="text/javascript" charset="utf-8" src="javascripts/jquery.localscroll.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    // <![CDATA[
+    var Theme = {
+      activate: function(name) {
+        window.location.hash = 'themes/' + name
+        Theme.loadCurrent();
+      },
+
+      loadCurrent: function() {
+        var hash = window.location.hash;
+        if (hash.length > 0) {
+          matches = hash.match(/^#themes\/([a-z0-9\-_]+)$/);
+          if (matches && matches.length > 1) {
+            $('#current-theme').attr('href', 'stylesheets/themes/' + matches[1] + '/style.css');
+          } else {
+            alert('theme not valid');
+          }
+        }
+      }
+    }
+
+    $(document).ready(function() {
+      Theme.loadCurrent();
+      $.localScroll();
+      $('.table :checkbox.toggle').each(function(i, toggle) {
+        $(toggle).change(function(e) {
+          $(toggle).parents('table:first').find(':checkbox:not(.toggle)').each(function(j, checkbox) {
+            checkbox.checked = !checkbox.checked;
+          })
+        });
+      });
+    });
+    // ]]>
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <h1><a href="http://pilu.github.com/web-app-theme/index.html">Classy CAS</a></h1>
+      <div id="user-navigation">
+        <ul class="wat-cf">
+          <li><a href="http://pilu.github.com/web-app-theme/#">Profile</a></li>
+          <li><a href="http://pilu.github.com/web-app-theme/#">Settings</a></li>
+          <li><a class="logout" href="http://pilu.github.com/web-app-theme/#">Logout</a></li>
+        </ul>
+      </div>
+      <div id="main-navigation">
+        <ul class="wat-cf">
+          <li class="first"><a href="#">Home</a></li>
+        </ul>
+      </div>
+    </div>
+    <%= yield %>
+
+
+</body></html>    

@@ -75,7 +75,7 @@ get "/login" do
       end
     else
       @login_ticket = LoginTicket.create!(@redis)
-      haml :login
+      erb :login
     end
   end
 end
@@ -105,6 +105,7 @@ post "/login" do
       haml :logged_in
     end
   else
+    flash[:error] = "Login was not successful."
     redirect "/login", 303
   end
 end
@@ -138,15 +139,15 @@ get '/logout' do
   url = params[:url]
   if sso_session
     @sso_session.destroy!(@redis)
-    flash.now[:success] = "Logout Successful."
+    flash.now[:notice] = "Logout Successful."
     if url
-      msg = "The application you just logged out of has provided a link it would like you to follow."
+      msg = "  The application you just logged out of has provided a link it would like you to follow."
       msg += "Please <a href=\"#{url}\">click here</a> to access <a href=\"#{url}\">#{url}</a>"      
-      flash.now[:notice] = msg
+      flash.now[:notice] += msg
     end
   end
   @login_ticket = LoginTicket.create!(@redis)
-  haml :login
+  erb :login
 end
 
 

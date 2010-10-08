@@ -1,0 +1,48 @@
+    <div id="box">
+      <div class="block" id="block-login">
+        <h2>Login</h2>
+        <div class="content login">
+          <div class="flash">
+            <% if flash[:error]%>
+            <div class="message error">
+              <p><%= flash[:error]%></p>
+            </div>
+            <% end %>
+            <% if flash[:notice]%>
+            <div class="message notice">
+              <p><%= flash[:notice]%></p>
+            </div>
+            <% end %>
+          </div>
+          <form action='/login' method='post' class ='form login'>
+            <div class="group wat-cf">
+              <div class="left">
+                <label class="label right">Username</label>
+              </div>
+              <div class="right">
+                <input id='username' name='username' type='text' class="text_field"/> 
+              </div>
+            </div>
+            <div class="group wat-cf">
+              <div class="left">
+                <label class="label right">Password</label>
+              </div>
+              <div class="right">
+                <input id='password' name='password' type='password' class="text_field"/> 
+              </div>
+              <input name='lt' type='hidden' value='<%= @login_ticket.ticket %>' /> 
+              <input name='warn' type='hidden' /> 
+              <% if @service_url %>
+                <input name='service' type='hidden' value='<%= @service_url %>' />
+              <% end %>
+            </div>
+            <div class="group navform wat-cf">
+              <div class="right">
+                <button class="button" type="submit">
+                  <img src="images/key.png" alt="Save"> Login
+                </button>
+              </div>
+            </div>
+          </form>
+      </div>
+    </div>

@@ -1,5 +1,9 @@
 class UserStore
   def self.authenticate(username, password)
-    true
+    if username == "quentin" and password == "testpassword"
+      true
+    else
+      false
+    end
   end
 end

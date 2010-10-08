@@ -1,6 +1,3 @@
-- [:notice, :error, :success].each do |key| 
-  - unless flash[key].blank? 
-    %p{ :class => "flash flash_#{key}" }= flash[key] 
 %form{:action => '/login', :method => 'post'}
   %p
     %label{:for => "username"} Username:
