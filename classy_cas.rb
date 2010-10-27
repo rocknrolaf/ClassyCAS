@@ -19,6 +19,12 @@ configure do
     require 'redis'
     uri = URI.parse('redis://heroku:60805d87e9dc1626bd64928253407933@goosefish.redistogo.com:9787/')
     REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+    
+    FIRST_SITE_URL = 'http://quiet-samurai-41.heroku.com'
+    SECOND_SITE_URL = 'http://cold-river-72.heroku.com'
+  else
+    FIRST_SITE_URL = 'http://redrum.local'
+    SECOND_SITE_URL = 'http://greenie.local'
   end
 end
 
@@ -147,9 +153,13 @@ get '/logout' do
     end
   end
   @login_ticket = LoginTicket.create!(@redis)
+  @logout = true
   erb :login
 end
 
+get '/frame' do
+  erb :frame
+end
 
 private
   def sso_session
