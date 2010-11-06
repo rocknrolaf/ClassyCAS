@@ -22,9 +22,11 @@ configure do
     
     FIRST_SITE_URL = 'http://quiet-samurai-41.heroku.com'
     SECOND_SITE_URL = 'http://cold-river-72.heroku.com'
+    USER_STORE_URL = 'http:/:stormy-river-84.heroku.com'
   else
     FIRST_SITE_URL = 'http://redrum.local'
     SECOND_SITE_URL = 'http://greenie.local'
+    USER_STORE_URL = 'http://0.0.0.0:3000'
   end
 end
 
