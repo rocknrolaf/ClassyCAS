@@ -1,7 +1,7 @@
 require 'rest_client'
 
 class UserStore
-  def authenticate(username, password)
+  def self.authenticate(username, password)
     begin
       RestClient.post "#{USER_STORE_URL}/users/sign_in.xml", 
                                 :user => {:email => username, 
