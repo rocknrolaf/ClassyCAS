@@ -1,5 +1,5 @@
 source "http://rubygems.org"
-gem 'sinatra', '~>1.0'
+gem 'sinatra', '1.1'
 gem 'redis', '~>2.0'
 gem 'SystemTimer', '1.2'
 gem 'haml', '~>3.0.18'
