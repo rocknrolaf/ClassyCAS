@@ -1,6 +1,5 @@
-require 'classy_cas'
-require 'rack/flash'
-use Rack::Session::Cookie
-use Rack::Flash
-
+require 'rubygems'
+require 'bundler'
+Bundler.require
+require './classy_cas'
 run Sinatra::Application

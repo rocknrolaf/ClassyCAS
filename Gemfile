@@ -8,6 +8,7 @@ gem 'nokogiri', '~>1.4.0'
 gem 'rack', '~>1.2.0'
 gem 'rack-flash'
 gem 'rest-client'
+
 group :test, :development do
   gem "ruby-debug"
 end

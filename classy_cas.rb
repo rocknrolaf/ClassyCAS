@@ -1,20 +1,14 @@
-require 'rubygems'
-# require "bundler/setup"
-
-require 'sinatra'
-require 'redis'
-require 'haml'
 require 'addressable/uri'
-require 'nokogiri'
-require 'rack-flash'
 require 'lib/login_ticket'
 require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
 require 'config/environment'
+use Rack::Session::Cookie
 use Rack::Flash
 
+set :views, File.dirname(__FILE__) + '/views'
 
 before do
   @redis ||= REDIS
