@@ -1,8 +1,7 @@
 require 'rubygems'
-require "bundler/setup"
+# require "bundler/setup"
 
 require 'sinatra'
-
 require 'redis'
 require 'haml'
 require 'addressable/uri'
@@ -13,29 +12,12 @@ require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
+require 'config/environment'
 use Rack::Flash
-configure do
-  if ENV['RACK_ENV'] == 'production'
-    require 'redis'
-    uri = URI.parse('redis://heroku:60805d87e9dc1626bd64928253407933@goosefish.redistogo.com:9787/')
-    REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-    
-    FIRST_SITE_URL = 'http://quiet-samurai-41.heroku.com'
-    SECOND_SITE_URL = 'http://cold-river-72.heroku.com'
-    USER_STORE_URL = 'http://stormy-river-84.heroku.com'
-  else
-    FIRST_SITE_URL = 'http://redrum.local'
-    SECOND_SITE_URL = 'http://greenie.local'
-    USER_STORE_URL = 'http://0.0.0.0:3000'
-  end
-end
+
 
 before do
-  if ENV['RACK_ENV'] == 'production'
-    @redis = REDIS
-  else
-    @redis ||= Redis.new
-  end
+  @redis ||= REDIS
 end
 
 
@@ -159,10 +141,6 @@ get '/logout' do
   erb :login
 end
 
-get '/frame' do
-  erb :frame
-end
-
 private
   def sso_session
     @sso_session ||= TicketGrantingTicket.validate(request.cookies["tgt"], @redis)
@@ -201,9 +179,7 @@ private
     namespace_hack(xml)
   end
 
-
-
-  #Nokogiri will not allow a namespace to be used before
+  #TIMCASE - Nokogiri will not allow a namespace to be used before
   #It's declared, why this is I don't know.
   def namespace_hack(xml)
     result = xml.to_xml
