@@ -3,13 +3,14 @@ $:.unshift(File.dirname(__FILE__) + "/../")
 require 'test/unit'
 require 'rubygems'
 require 'bundler'
-Bundler.setup(:default, :test)
+Bundler.require :test, :default
 
 require 'shoulda'
 require 'ruby-debug'
 require 'redis'
 require "rack/test"
 require 'webrat'
+require 'rr'
 
 Webrat.configure do |config|
   config.mode = :rack
