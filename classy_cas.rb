@@ -11,9 +11,15 @@ use Rack::Flash
 set :views, File.dirname(__FILE__) + '/views'
 
 before do
-  @redis ||= Redis.new(:server => 'redis://heroku:60805d87e9dc1626bd64928253407933@goosefish.redistogo.com:9787/')
+  @redis ||= Redis.new(:host =>' goosefish.redistogo.com', 
+                       :port => '9787', 
+                       :password =>  '60805d87e9dc1626bd64928253407933'
 end
 
+
+get "/" do
+  redirect "/login"
+end
 
 get "/login" do
   @service_url = Addressable::URI.parse(params[:service])
