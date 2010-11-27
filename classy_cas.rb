@@ -8,7 +8,8 @@ require 'config/environment' if File.exists?('config/enviroment')
 use Rack::Session::Cookie
 use Rack::Flash
 
-set :views, File.dirname(__FILE__) + '/views'
+set :root, File.dirname(__FILE__)
+set :views, root + '/views'
 set :public, Proc.new { File.join(root, "public") }
 before do
   @redis ||= Redis.new(:host =>'goosefish.redistogo.com', 
