@@ -9,8 +9,8 @@ use Rack::Session::Cookie
 use Rack::Flash
 
 set :root, File.dirname(__FILE__)
-set :views, Proc.new { File.join(:root, "views") }
-set :public, Proc.new { File.join(:root, "public") }
+set :views, Proc.new { File.join(root, "views") }
+set :public, Proc.new { File.join(root, "public") }
 before do
   @redis ||= Redis.new(:host =>'goosefish.redistogo.com', 
                        :port => '9787', 
