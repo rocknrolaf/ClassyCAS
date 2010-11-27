@@ -8,13 +8,15 @@ require 'config/environment' if File.exists?('config/enviroment')
 use Rack::Session::Cookie
 use Rack::Flash
 
+APP_CONFIG = YAML.load_file("config/classy_cas.yml")
+
 set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
 before do
-  @redis ||= Redis.new(:host =>'goosefish.redistogo.com', 
-                       :port => '9787', 
-                       :password =>  '60805d87e9dc1626bd64928253407933')
+  @redis ||= Redis.new(:host => APP_CONFIG['redis_host'], 
+                       :port => APP_CONFIG['port'], 
+                       :password =>  APP_CONFIG['password'])
 end
 
 
