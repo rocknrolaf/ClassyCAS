@@ -1,9 +1,9 @@
     <div id="box">
       <% if @logout %>
-      <iframe src ="<%= FIRST_SITE_URL %>/session_clear">
+      <iframe src="<%= FIRST_SITE_URL %>/session_clear" style="display:none">
       
       </iframe>
-      <iframe src="<%= SECOND_SITE_URL %>/session_clear">
+      <iframe src="<%= SECOND_SITE_URL %>/session_clear" style="display:none">
       </iframe>
       <% end %>
       <div class="block" style="text-align:center">
@@ -13,7 +13,6 @@
         <h2>Login</h2>
         <div class="content login">
           <div class="flash">
-			<% if @jig %>The jig is up<% end %>
             <% if flash[:error]%>
             <div class="message error">
               <p><%= flash[:error]%></p>
