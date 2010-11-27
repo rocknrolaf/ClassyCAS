@@ -11,7 +11,7 @@ use Rack::Flash
 set :views, File.dirname(__FILE__) + '/views'
 
 before do
-  @redis ||= Redis.new(:host =>' goosefish.redistogo.com', 
+  @redis ||= Redis.new(:host =>'goosefish.redistogo.com', 
                        :port => '9787', 
                        :password =>  '60805d87e9dc1626bd64928253407933')
 end
