@@ -15,8 +15,8 @@ set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
 before do
   @redis ||= Redis.new(:host => APP_CONFIG['redis_host'], 
-                       :port => APP_CONFIG['port'], 
-                       :password =>  APP_CONFIG['password'])
+                       :port => APP_CONFIG['redis_port'], 
+                       :password =>  APP_CONFIG['redis_password'])
 end
 
 
