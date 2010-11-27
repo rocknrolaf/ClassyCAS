@@ -11,7 +11,7 @@ use Rack::Flash
 set :views, File.dirname(__FILE__) + '/views'
 
 before do
-  @redis ||= REDIS
+  @redis ||= REDIS.new(:server => 'redis://heroku:60805d87e9dc1626bd64928253407933@goosefish.redistogo.com:9787/')
 end
 
 
