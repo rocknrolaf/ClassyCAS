@@ -1,6 +1,7 @@
 require 'rest_client'
 
 class UserStore
+
   def self.authenticate(username, password)
     begin
       RestClient.post "#{USER_STORE_URL}/users/sign_in.xml", 
