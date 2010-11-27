@@ -8,7 +8,7 @@ require 'config/environment' if File.exists?('config/enviroment')
 use Rack::Session::Cookie
 use Rack::Flash
 
-APP_CONFIG = YAML.load_file("config/classy_cas.yml")
+APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
 
 set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
