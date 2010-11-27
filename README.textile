@@ -1,6 +1,14 @@
 h1. Classy CAS
 
-Classy CAS is (or rather, will be) a "CAS compliant":http://www.jasig.org/cas/protocol server that will allow centralized authentication across a number of sites and environments.  For now, it's a weekend exercise.
+* Single sign-on server
+* CAS protocol compliant
+* Implemented with Sinatra
+* Uses Redis
+
+Classy CAS is a Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.  ClassyCAS provides the server services of Single sign-on by acting as the central point authentication where users attempting access multiple sites are sent to be authenticated.  If you've ever signed in to a Google service and then accessed your Gmail and then moved over to Google reader then you've experienced exactly what Single sign-on means.
+
+On the client side, ClassyCAS pairs up nicely with OmniAuth and it's CAS client implementation.  However clients are not only limited to either RubyonRails or Sinatra apps, because the server is built on the CAS protocol any client in any language or framework which adheres to the protocol is supported, thus ClassyCAS is also well to suited to environments where Single sign-on is desired but where the ecosystem of applications is heterogeneous in terms of platforms.
+
 
 h2. What's There
 
@@ -12,7 +20,7 @@ h2. What's Missing
 
 * Proxy authentication.
 * Logout support.
-* Plugable authentication stores.  I'm thinking of "Warden":http://github.com/hassox/warden or "Devise":http://blog.plataformatec.com.br/tag/devise/
+* Plugable authentication stores.  I'm thinking of "Warden":http://github.com/hassox/warden or "Devise":http://blog.plataformatecby.com.br/tag/devise/
 * Lots of code cleanup.  The tests and the application all need a hearty helping of TLC before they're production ready.
 
 h2. Resources
