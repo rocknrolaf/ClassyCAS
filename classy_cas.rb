@@ -4,7 +4,6 @@ require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
-require 'lib/redis_spawner'
 require 'config/environment' if File.exists?('config/enviroment')
 use Rack::Session::Cookie
 use Rack::Flash
