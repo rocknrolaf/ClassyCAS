@@ -82,7 +82,8 @@ shotgun config.ru
 # Make a copy of the client app to act as your second sign on client.
 # Open a new terminal tab and start Redis, "redis-server"  
 
-
+h2. Image test
+!http://img.skitch.com/20100120-tca4njb8tbh9tbu7yjwb5fjicc.png!
 h2. What's There
 
 * "Sinatra":http://www.sinatrarb.com/ based.  Classy.
