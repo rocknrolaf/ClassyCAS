@@ -1,14 +1,35 @@
 h1. Classy CAS
 
-* Single sign-on server
-* CAS protocol compliant
-* Implemented with Sinatra
+Classy CAS is a Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.
+
+* Is a Single sign-on server
+* Is CAS protocol compliant
+* Is implemented with Sinatra
 * Uses Redis
 * Pairs great with OmniAuth CAS client
+* Supports any CAS compliant client from any language, framework, or platform (PHP, .NET, Java)
 
-Classy CAS is a Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.  ClassyCAS provides the server services of Single sign-on by acting as the central point authentication where users attempting access multiple sites are sent to be authenticated.  If you've ever signed in to a Google service and then accessed your Gmail and then moved over to Google reader then you've experienced exactly what Single sign-on means.
 
 On the client side, ClassyCAS pairs up nicely with OmniAuth and it's CAS client implementation.  However clients are not only limited to either RubyonRails or Sinatra apps, because the server is built on the CAS protocol any client in any language or framework which adheres to the protocol is supported, thus ClassyCAS is also well to suited to environments where Single sign-on is desired but where the ecosystem of applications is heterogeneous in terms of platforms.
+
+
+h2. Quick Start Demo
+
+# Download and install Redis:"http://code.google.com/p/redis/"
+<pre>
+<code>
+ curl -O http://redis.googlecode.com/files/redis-2.0.4.tar.gz
+ tar xvzf redis-2.0.4.tar.gz
+ cd redis-2.0.4
+ make
+ sudo cp redis-server redis-cli redis-benchmark /usr/local/bin
+</code>
+</pre>
+# git clone https://github.com/timcase/cas_client_example
+# From the client apps directory "bundle install"
+# Start the client app 
+# Make a copy of the client app to act as your second sign on client.
+# Open a new terminal tab and start Redis, "redis-server"  
 
 
 h2. What's There
