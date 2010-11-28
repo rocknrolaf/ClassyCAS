@@ -1,9 +1,0 @@
-configure :production do
-  CLIENT_SITES = ['http://firstsite.com', 'http://secondsite.com']
-  USER_STORE_URL = 'http://stormy-river-84.heroku.com'
-end
-
-configure :development do
-  CLIENT_SITES = ['http://clientone.local', 'http://clienttwo.local']
-  USER_STORE_URL = 'http://0.0.0.0:3000'
-end

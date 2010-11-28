@@ -4,6 +4,7 @@ h1. Classy CAS
 * CAS protocol compliant
 * Implemented with Sinatra
 * Uses Redis
+* Pairs great with OmniAuth CAS client
 
 Classy CAS is a Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.  ClassyCAS provides the server services of Single sign-on by acting as the central point authentication where users attempting access multiple sites are sent to be authenticated.  If you've ever signed in to a Google service and then accessed your Gmail and then moved over to Google reader then you've experienced exactly what Single sign-on means.
 
