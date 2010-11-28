@@ -4,7 +4,7 @@ class UserStore
 
   def self.authenticate(username, password)
     begin
-      RestClient.post "#{USER_STORE_URL}/users/sign_in.xml", 
+      RestClient.post "#{AppConfig['user_store_url']}/users/sign_in.xml", 
                                 :user => {:email => username, 
                                 :password => password}, 
                                 :content_type => :xml

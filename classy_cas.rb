@@ -13,7 +13,6 @@ set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
 
-USER_STORE_URL = 'http://userdome.heroku.com'
 APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
 
 
