@@ -10,6 +10,7 @@ gem 'rack-flash'
 gem 'rest-client'
 
 group :test, :development do
+  gem "shotgun"
   gem "ruby-debug"
 end
 

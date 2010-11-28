@@ -1,10 +1,10 @@
 h1. Classy CAS
 
-Classy CAS is a Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.
+Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.
 
-* Is a Single sign-on server
-* Is CAS protocol compliant
-* Is implemented with Sinatra
+* Single sign-on server
+* CAS protocol compliant
+* Implemented with Sinatra
 * Uses Redis
 * Pairs great with OmniAuth CAS client
 * Supports any CAS compliant client from any language, framework, or platform (PHP, .NET, Java)
@@ -25,6 +25,57 @@ h2. Quick Start Demo
  sudo cp redis-server redis-cli redis-benchmark /usr/local/bin
 </code>
 </pre>
+# Install the first rails sign-on client example
+<pre>
+<code>
+	git clone git://github.com/timcase/cas_client_example.git  first_client
+	bundle install
+</code>
+</pre>
+# Install a second rails sign-on client example
+<pre>
+<code>
+	git clone git://github.com/timcase/cas_client_example.git second_client
+	bundle install
+</code>
+</pre>
+# Install ClassyCAS
+<pre>
+<code>
+	git://github.com/Econify/ClassyCAS.git
+	bundle install
+</code>
+</pre>
+# Run it all together
+In your current terminal tab, start Redis in the background:
+<pre>
+<code>
+redis-server
+</code>
+</pre>
+Start the first client: open up a new tab, navigate to the first client app directory and start the app
+<pre>
+<code>
+ruby script/server 
+</code>
+</pre>
+Same thing for the second client but this time assign it a different port
+<pre>
+<code>
+ruby script/server -p 3001
+</code>
+</pre>
+Open up yet another terminal tab (you should have four open now) and start ClassyCAS:
+<pre>
+<code>
+shotgun config.ru
+</code>
+</pre>
+# Navigate to the first app in your browser
+# Click on the login link
+
+
+
 # git clone https://github.com/timcase/cas_client_example
 # From the client apps directory "bundle install"
 # Start the client app 

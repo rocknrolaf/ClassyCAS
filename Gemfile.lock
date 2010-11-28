@@ -22,6 +22,8 @@ GEM
       ruby-debug-base (~> 0.10.3.0)
     ruby-debug-base (0.10.3)
       linecache (>= 0.3)
+    shotgun (0.8)
+      rack (>= 1.0)
     shoulda (2.11.3)
     sinatra (1.1.0)
       rack (~> 1.1)
@@ -46,6 +48,7 @@ DEPENDENCIES
   rest-client
   rr
   ruby-debug
+  shotgun
   shoulda
   sinatra (= 1.1)
   webrat
