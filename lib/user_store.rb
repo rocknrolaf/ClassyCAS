@@ -3,7 +3,7 @@ require 'rest_client'
 class UserStore
     
   def self.authenticate(username, password)
-    app_config = YAML.load_file(File.dirname(__FILE__) + "/config/classy_cas.yml")[ENV['RACK_ENV']]
+    app_config = YAML.load_file(File.dirname(__FILE__) + "../config/classy_cas.yml")[ENV['RACK_ENV']]
     begin
       RestClient.post "#{app_config['user_store_url']}/users/sign_in.xml", 
                                 :user => {:email => username, 
