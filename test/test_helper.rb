@@ -26,3 +26,11 @@ module Test::Unit::Assertions
     assert_equal(false, object, message)
   end
 end
+
+class Test::Unit::TestCase
+  include RR::Adapters::TestUnit
+  include Rack::Test::Methods
+  include Webrat::Methods
+  include Webrat::Matchers
+  use Rack::Session::Cookie
+end

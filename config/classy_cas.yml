@@ -1,8 +1,9 @@
 # config/config.yml
 development:
-    
+
   
 production:
   redis_host: goosefish.redistogo.com
   redis_port: 9787
   redis_password: 60805d87e9dc1626bd64928253407933
+

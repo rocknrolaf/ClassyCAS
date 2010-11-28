@@ -4,21 +4,22 @@ require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
 require 'lib/user_store'
+require 'lib/redis_spawner'
 require 'config/environment' if File.exists?('config/enviroment')
 use Rack::Session::Cookie
 use Rack::Flash
 
-APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
-
 set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
-before do
-  @redis ||= Redis.new(:host => APP_CONFIG['redis_host'], 
-                       :port => APP_CONFIG['redis_port'], 
-                       :password =>  APP_CONFIG['redis_password'])
-end
 
+
+APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
+
+
+before do
+  @redis ||= instantiate_redis
+end
 
 get "/" do
   redirect "/login"
@@ -181,7 +182,24 @@ private
     end
     namespace_hack(xml)
   end
-
+  
+  def instantiate_redis
+    if redis_configured?
+        Redis.new(:host => config['redis_host'], 
+                  :port => config['redis_port'], 
+                  :password =>  config['redis_password'])
+    else
+      Redis.new
+    end    
+  end
+  
+  def redis_configured?
+    !APP_CONFIG.nil? &&
+    APP_CONFIG['redis_host'] &&
+    APP_CONFIG['redis_port'] &&
+    APP_CONFIG['redis_password']    
+  end
+  
   #TIMCASE - Nokogiri will not allow a namespace to be used before
   #It's declared, why this is I don't know.
   def namespace_hack(xml)

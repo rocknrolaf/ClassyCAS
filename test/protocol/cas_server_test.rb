@@ -5,11 +5,6 @@ require "rack/flash/test"
 set :environment, :test
 
 class CasServerTest < Test::Unit::TestCase
-  include RR::Adapters::TestUnit
-  include Rack::Test::Methods
-  include Webrat::Methods
-  include Webrat::Matchers
-  use Rack::Session::Cookie
 
   module Rack
     module Test
