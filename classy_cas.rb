@@ -13,8 +13,9 @@ set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
 
-APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
-
+config do
+  APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
+end
 
 before do
   @redis ||= instantiate_redis
