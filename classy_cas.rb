@@ -185,9 +185,9 @@ private
   
   def instantiate_redis
     if redis_configured?
-        Redis.new(:host => config['redis_host'], 
-                  :port => config['redis_port'], 
-                  :password =>  config['redis_password'])
+        Redis.new(:host => APP_CONFIG['redis_host'], 
+                  :port => APP_CONFIG['redis_port'], 
+                  :password =>  APP_CONFIG['redis_password'])
     else
       Redis.new
     end    
