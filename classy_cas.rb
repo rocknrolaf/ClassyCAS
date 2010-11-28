@@ -133,6 +133,7 @@ get '/logout' do
   url = params[:url]
   if sso_session
     @sso_session.destroy!(@redis)
+    @client_sites = App_Config['client_sites']
     flash.now[:notice] = "Logout Successful."
     if url
       msg = "  The application you just logged out of has provided a link it would like you to follow."
