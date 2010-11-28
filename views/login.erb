@@ -1,6 +1,6 @@
     <div id="box">
       <% if @logout %>
-		<% @client_sites.each do |site_url| %>		
+		<% @app_config['client_sites'].each do |site_url| %>		
 	      <iframe src="<%= site_url %>/session_clear" style="display:none">     
 	      </iframe>
 		<% end %>

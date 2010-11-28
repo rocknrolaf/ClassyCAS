@@ -14,10 +14,11 @@ set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
 
 
-APP_CONFIG = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
+
 
 
 before do
+  @app_config = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
   @redis ||= instantiate_redis
 end
 
@@ -133,7 +134,6 @@ get '/logout' do
   url = params[:url]
   if sso_session
     @sso_session.destroy!(@redis)
-    @client_sites = App_Config['client_sites']
     flash.now[:notice] = "Logout Successful."
     if url
       msg = "  The application you just logged out of has provided a link it would like you to follow."
@@ -186,19 +186,19 @@ private
   
   def instantiate_redis
     if redis_configured?
-        Redis.new(:host => APP_CONFIG['redis_host'], 
-                  :port => APP_CONFIG['redis_port'], 
-                  :password =>  APP_CONFIG['redis_password'])
+        Redis.new(:host => @app_config['redis_host'], 
+                  :port => @app_config['redis_port'], 
+                  :password =>  @app_config['redis_password'])
     else
       Redis.new
     end    
   end
   
   def redis_configured?
-    !APP_CONFIG.nil? &&
-    APP_CONFIG['redis_host'] &&
-    APP_CONFIG['redis_port'] &&
-    APP_CONFIG['redis_password']    
+    !@app_config.nil? &&
+    @app_config['redis_host'] &&
+    @app_config['redis_port'] &&
+    @app_config['redis_password']    
   end
   
   #TIMCASE - Nokogiri will not allow a namespace to be used before

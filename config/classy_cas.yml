@@ -1,5 +1,9 @@
 # config/config.yml
 development:
+  user_store_url: http://userdome.heroku.com
+  client_sites: 
+    - "http://casclientone.heroku.com"
+    - 'http://casclienttwo.heroku.com'
 
   
 production:
