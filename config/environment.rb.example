@@ -1,18 +1,9 @@
 configure :production do
-  FIRST_SITE_URL = 'http://firstsite.com'
-  SECOND_SITE_URL = 'http://secondsite.com'
-  USER_STORE_URL = 'http://userdatabase.com'
-  REDIS_URL = 'redis_installation.com'
-  
-  uri = URI.parse(REDIS_URL)
-  REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-  
+  CLIENT_SITES = ['http://firstsite.com', 'http://secondsite.com']
+  USER_STORE_URL = 'http://stormy-river-84.heroku.com'
 end
 
 configure :development do
-  REDIS = Redis.new
-  FIRST_SITE_URL = 'http://0.0.0.0:3001'
-  SECOND_SITE_URL = 'http://0.0.0.0:3002'
+  CLIENT_SITES = ['http://clientone.local', 'http://clienttwo.local']
   USER_STORE_URL = 'http://0.0.0.0:3000'
 end
-
