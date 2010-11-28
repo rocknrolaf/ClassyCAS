@@ -1,7 +1,8 @@
 require 'rest_client'
 
 class UserStore
-
+  APP_CONFIG = YAML.load_file("../config/classy_cas.yml")[ENV['RACK_ENV']]
+  
   def self.authenticate(username, password)
     begin
       RestClient.post "#{AppConfig['user_store_url']}/users/sign_in.xml", 
