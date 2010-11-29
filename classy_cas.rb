@@ -3,7 +3,8 @@ require 'lib/login_ticket'
 require 'lib/proxy_ticket'
 require 'lib/service_ticket'
 require 'lib/ticket_granting_ticket'
-require 'lib/user_store'
+require 'lib/user_store/user_store'
+require 'lib/user_store/demo'
 # require 'config/environment' #if File.exists?('config/environment')
   
 use Rack::Session::Cookie
@@ -12,8 +13,6 @@ use Rack::Flash
 set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "views") }
 set :public, Proc.new { File.join(root, "public") }
-
-
 
 
 
@@ -86,7 +85,7 @@ post "/login" do
   # Spec is undefined about what to do without these params, so redirecting to credential requestor
   redirect "/login", 303 unless username && password && login_ticket
 
-  if UserStore.authenticate(username, password)
+  if Demo.authenticate(username, password)
     tgt = TicketGrantingTicket.new(username)
     tgt.save!(@redis)
     cookie = tgt.to_cookie(request.host)
@@ -201,6 +200,7 @@ private
     @app_config['redis_password']    
   end
   
+
   #TIMCASE - Nokogiri will not allow a namespace to be used before
   #It's declared, why this is I don't know.
   def namespace_hack(xml)

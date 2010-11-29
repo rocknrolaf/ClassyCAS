@@ -39,6 +39,15 @@ h2. Quick Start Demo
 	bundle install
 </code>
 </pre>
+Open the project in a text editor and navigate to config/config.yml, edit the file to look like this:
+<pre>
+<code>
+	development:
+	    #first or second
+	    site_name: second
+	    other_site_url: http://0.0.0.0:3000</code>
+</pre>
+
 # Install ClassyCAS
 <pre>
 <code>
@@ -59,7 +68,7 @@ Start the first client: open up a new tab, navigate to the first client app dire
 ruby script/server 
 </code>
 </pre>
-Same thing for the second client but this time assign it a different port
+Same thing for the second client but this time assign it to a different port
 <pre>
 <code>
 ruby script/server -p 3001
@@ -72,18 +81,13 @@ shotgun config.ru
 </code>
 </pre>
 # Navigate to the first app in your browser
-# Click on the login link
+# Click on the login link, and you'll be redirected to ClassyCAS
+# Login successfully with any username and password
+# You should be redirect back to the first site's protected area and you'll see a picture of a cow.
+# From the first site you'll see a link to take you to the other site, you won't see it but you are actually redirected by the second site to ClassyCAS for authentication (which does it via a session cookie) and then sent back to the second site.
+# Click to logout from either site, you'll be taken back to ClassyCAS, navigate back to both and you should see that you are logged out from both.
 
 
-
-# git clone https://github.com/timcase/cas_client_example
-# From the client apps directory "bundle install"
-# Start the client app 
-# Make a copy of the client app to act as your second sign on client.
-# Open a new terminal tab and start Redis, "redis-server"  
-
-h2. Image test
-!http://img.skitch.com/20100120-tca4njb8tbh9tbu7yjwb5fjicc.png!
 h2. What's There
 
 * "Sinatra":http://www.sinatrarb.com/ based.  Classy.

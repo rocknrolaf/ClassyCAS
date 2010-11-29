@@ -1,5 +1,5 @@
 class Demo < UserStore
-  def self.authenticate
+  def self.authenticate(userstore, password)
     true
   end
 end
