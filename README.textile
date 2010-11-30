@@ -29,6 +29,7 @@ h2. Quick Start Demo
 <pre>
 <code>
 	git clone git@github.com:Econify/classy_cas_client_example.git  first_client
+  cd first_client
 	bundle install
 </code>
 </pre>
@@ -36,6 +37,7 @@ h2. Quick Start Demo
 <pre>
 <code>
 	git clone git@github.com:Econify/classy_cas_client_example.git second_client
+  cd second_client
 	bundle install
 </code>
 </pre>
@@ -51,7 +53,7 @@ Open the second rails sign-on client in a text editor and navigate to config/con
 # Install ClassyCAS
 <pre>
 <code>
-	git://github.com/Econify/ClassyCAS.git
+	git clone git://github.com/Econify/ClassyCAS.git
 	bundle install
 </code>
 </pre>
