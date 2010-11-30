@@ -116,7 +116,7 @@ http://127.0.0.1:9393/login?service=http://0.0.0.0:3000/auth/cas/callback
 </code>
 </pre>
 
-This url is for the "client demo app example":git@github.com:Econify/classy_cas_client_example.git, it could very be the href for a login link tag.  A Callback url is the service parameter in this case http://0.0.0.0:3000/auth/cas/callback, this callback url can be anything you want simply by change the service parameter on the initial call to ClassyCAS.
+This url is for the "client demo app example":https://github.com/Econify/classy_cas_client_example.git, it could very be the href for a login link tag.  A Callback url is the service parameter in this case http://0.0.0.0:3000/auth/cas/callback, this callback url can be anything you want simply by change the service parameter on the initial call to ClassyCAS.
 
 
 h2. What's There
