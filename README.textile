@@ -18,11 +18,11 @@ h2. Quick Start Demo
 # Download and install Redis:"http://code.google.com/p/redis/"
 <pre>
 <code>
- curl -O http://redis.googlecode.com/files/redis-2.0.4.tar.gz
- tar xvzf redis-2.0.4.tar.gz
- cd redis-2.0.4
- make
- sudo cp redis-server redis-cli redis-benchmark /usr/local/bin
+	 curl -O http://redis.googlecode.com/files/redis-2.0.4.tar.gz
+	 tar xvzf redis-2.0.4.tar.gz
+	 cd redis-2.0.4
+	 make
+	 sudo cp redis-server redis-cli redis-benchmark /usr/local/bin
 </code>
 </pre>
 # Install the first rails sign-on client example
