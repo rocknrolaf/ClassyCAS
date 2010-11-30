@@ -59,25 +59,25 @@ Open the second rails sign-on client in a text editor and navigate to config/con
 In your current terminal tab, start Redis in the background:
 <pre>
 <code>
-redis-server
+	redis-server
 </code>
 </pre>
 Start the first client: open up a new tab, navigate to the first client app directory and start the app
 <pre>
 <code>
-ruby script/server 
+	ruby script/server 
 </code>
 </pre>
 Same thing for the second client but this time assign it to a different port
 <pre>
 <code>
-ruby script/server -p 3001
+	ruby script/server -p 3001
 </code>
 </pre>
 Open up yet another terminal tab (you should have four open now) and start ClassyCAS:
 <pre>
 <code>
-shotgun config.ru
+	shotgun config.ru
 </code>
 </pre>
 # Navigate to the first app in your browser
