@@ -28,18 +28,18 @@ h2. Quick Start Demo
 # Install the first rails sign-on client example
 <pre>
 <code>
-	git clone git://github.com/timcase/cas_client_example.git  first_client
+	git clone git@github.com:Econify/classy_cas_client_example.git  first_client
 	bundle install
 </code>
 </pre>
 # Install a second rails sign-on client example
 <pre>
 <code>
-	git clone git://github.com/timcase/cas_client_example.git second_client
+	git clone git@github.com:Econify/classy_cas_client_example.git second_client
 	bundle install
 </code>
 </pre>
-Open the project in a text editor and navigate to config/config.yml, edit the file to look like this:
+Open the second rails sign-on client in a text editor and navigate to config/config.yml, edit the file to look like this:
 <pre>
 <code>
 	development:
@@ -116,7 +116,7 @@ http://127.0.0.1:9393/login?service=http://0.0.0.0:3000/auth/cas/callback
 </code>
 </pre>
 
-This url is for the client demo app example, it could very be the href for a login link tag.  A Callback url is the service parameter in this case http://0.0.0.0:3000/auth/cas/callback, this callback url can be anything you want simply by change the service parameter on the initial call to ClassyCAS.
+This url is for the "client demo app example":git@github.com:Econify/classy_cas_client_example.git, it could very be the href for a login link tag.  A Callback url is the service parameter in this case http://0.0.0.0:3000/auth/cas/callback, this callback url can be anything you want simply by change the service parameter on the initial call to ClassyCAS.
 
 
 h2. What's There
@@ -131,6 +131,7 @@ h2. What's Missing
 
 h2. Resources
 
+* "ClassyCAS client example app":git@github.com:Econify/classy_cas_client_example.git
 * "CAS":http://www.jasig.org/cas
 * "Sinatra":http://www.sinatrarb.com/
 * "Redis":http://code.google.com/p/redis/
