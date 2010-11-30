@@ -3,14 +3,14 @@ h1. Classy CAS
 Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/protocol and implemented in Sinatra.
 
 * Single sign-on server
-* CAS protocol compliant
-* Implemented with Sinatra
-* Uses Redis
-* Pairs great with OmniAuth CAS client
-* Supports any CAS compliant client from any language, framework, or platform (PHP, .NET, Java)
+* "CAS protocol":http://www.jasig.org/cas/protocol compliant
+* Implemented with "Sinatra":http://www.sinatrarb.com/
+* Uses "Redis":http://code.google.com/p/redis/
+* Pairs great with "OmniAuth":https://github.com/intridea/omniauth "CAS client":https://github.com/intridea/omniauth/tree/master/oa-enterprise 
+* Supports any "CAS protocol":http://www.jasig.org/cas/protocol compliant client from any language, framework, or platform (PHP, .NET, Java)
 
 
-On the client side, ClassyCAS pairs up nicely with OmniAuth and it's CAS client implementation.  However clients are not only limited to either RubyonRails or Sinatra apps, because the server is built on the CAS protocol any client in any language or framework which adheres to the protocol is supported, thus ClassyCAS is also well to suited to environments where Single sign-on is desired but where the ecosystem of applications is heterogeneous in terms of platforms.
+On the client side, ClassyCAS pairs up nicely with "OmniAuth":https://github.com/intridea/omniauth and it's "CAS client implementation":https://github.com/intridea/omniauth/tree/master/oa-enterprise .  However clients are not only limited to either RubyonRails or Sinatra apps, because the server is built on the "CAS protocol":http://www.jasig.org/cas/protocol any compliant client in any language or framework which adheres to the protocol is supported, thus ClassyCAS is also well to suited to environments where Single sign-on is desired but where the ecosystem of applications is heterogeneous in terms of platforms.
 
 
 h2. Quick Start Demo
@@ -84,8 +84,39 @@ shotgun config.ru
 # Click on the login link, and you'll be redirected to ClassyCAS
 # Login successfully with any username and password
 # You should be redirect back to the first site's protected area and you'll see a picture of a cow.
-# From the first site you'll see a link to take you to the other site, you won't see it but you are actually redirected by the second site to ClassyCAS for authentication (which does it via a session cookie) and then sent back to the second site.
+# From the first site you'll see a link to take you to the other site, you won't see it but you are actually redirected by the second site to ClassyCAS for authentication (which does it via a session cookie) and then sent back to the second site where you'll see a picture of an eagle.
 # Click to logout from either site, you'll be taken back to ClassyCAS, navigate back to both and you should see that you are logged out from both.
+
+h2. User Authentication
+
+ClassyCAS is designed to a provide a vehicle for Single sign-on to multiple client apps and doesn't concern itself with the intricacies of authentication.  In other words, it's up to you to roll your own authentication.  For authentication ClassyCAS makes a call to a class called UserStore which has one method authenticate.  It's up to you how you want to implement authenticate, included in the same folder is an example of authenticate implemented to hit a rails app remotely through REST and getting it's authentication from that app (which in this example does it with Devise.)  You can do it many ways and here are some ideas:
+
+1) Remotely via REST to a devise app
+2) Locally via Datamapper or Activerecord 3.0 class.
+3) Key value pairs in a config file
+4) Whatever you can think of.
+
+h2. Logout
+
+The CAS protocol doesn't really specify whether logging you out of one client should log you out of all clients but we thought that made the most sense and so we wrote that into ClassyCAS.  Upon logging out a user is redirect to ClassyCAS which renders non-visible iframes that log the user out of all the apps.  There are two things to be aware of to make this work for you:
+
+# The iframes are located in the login template, views/login.erb.
+# You'll need to modify the url's of the iframes in the template to GET the logout method of the client app.
+# There is a config for the client apps in config/classy_cas.yml that let's tell ClassyCAS which clients need to be logged out.
+
+h2. Client Callback
+
+After a user successfully logs into ClassyCAS they are redirected back to the client.  The url they are redirected to must be sent to ClassyCAS in the form of a parameter that is part of the initial login redirect to ClassyCAS.
+
+For example: 
+
+<pre>
+<code>
+http://127.0.0.1:9393/login?service=http://0.0.0.0:3000/auth/cas/callback
+</code>
+</pre>
+
+This url is for the client demo app example, it could very be the href for a login link tag.  A Callback url is the service parameter in this case http://0.0.0.0:3000/auth/cas/callback, this callback url can be anything you want simply by change the service parameter on the initial call to ClassyCAS.
 
 
 h2. What's There
@@ -97,11 +128,11 @@ h2. What's There
 h2. What's Missing
 
 * Proxy authentication.
-* Logout support.
-* Plugable authentication stores.  I'm thinking of "Warden":http://github.com/hassox/warden or "Devise":http://blog.plataformatecby.com.br/tag/devise/
-* Lots of code cleanup.  The tests and the application all need a hearty helping of TLC before they're production ready.
 
 h2. Resources
 
 * "CAS":http://www.jasig.org/cas
-* "RubyCAS Server":http://github.com/gunark/rubycas-server, an existing CAS implementation written on top of Camping.  At times when the spec has been unclear, I've tried to stick to what RubyCAS does.
+* "Sinatra":http://www.sinatrarb.com/
+* "Redis":http://code.google.com/p/redis/
+* "OmniAuth":https://github.com/intridea/omniauth
+* "OmniAuth CAS":https://github.com/intridea/omniauth/tree/master/oa-enterprise
