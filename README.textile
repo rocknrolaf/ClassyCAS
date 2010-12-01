@@ -15,8 +15,9 @@ On the client side, ClassyCAS pairs up nicely with "OmniAuth":https://github.com
 
 h2. Quick Start Demo
 
-# Download and install Redis:"http://code.google.com/p/redis/"
-# (Feel free to also use homebrew if you're on a mac)
+<ol>
+ <li>Download and install Redis:"http://code.google.com/p/redis/"
+ (Feel free to also use homebrew if you're on a mac)
 <pre>
 <code>
 	 curl -O http://redis.googlecode.com/files/redis-2.0.4.tar.gz
@@ -25,64 +26,73 @@ h2. Quick Start Demo
 	 make
 	 sudo cp redis-server redis-cli redis-benchmark /usr/local/bin
 </code>
-</pre>
-# Install the first rails sign-on client example
+</pre></li>
+
+<li>Install the first rails sign-on client example
 <pre>
 <code>
 	git clone git@github.com:Econify/classy_cas_client_example.git  first_client
 	cd first_client
 	bundle install
 </code>
-</pre>
-# Install a second rails sign-on client example
+</pre></li>
+
+<li>Install a second rails sign-on client example
 <pre>
 <code>
 	git clone git@github.com:Econify/classy_cas_client_example.git second_client
 	cd second_client
 	bundle install
 </code>
-</pre>
-Open the second rails sign-on client in a text editor and navigate to config/config.yml, edit the file to look like this:
+</pre></li>
+
+<li>Open the second rails sign-on client in a text editor and navigate to config/config.yml, edit the file to look like this:
 <pre>
 <code>
 	development:
 	    #first or second
 	    site_name: second
 	    other_site_url: http://0.0.0.0:3000</code>
-</pre>
+</pre></li>
 
-# Install ClassyCAS
+<li>Install ClassyCAS
 <pre>
 <code>
 	git clone git://github.com/Econify/ClassyCAS.git
 	bundle install
 </code>
-</pre>
-# Run it all together
+</pre></li>
+
+<li>Run it all together
 In your current terminal tab, start Redis in the background:
 <pre>
 <code>
 	redis-server
 </code>
-</pre>
-Start the first client: open up a new tab, navigate to the first client app directory and start the app
+</pre></li>
+
+<li>Start the first client: open up a new tab, navigate to the first client app directory and start the app
 <pre>
 <code>
 	ruby script/server 
 </code>
-</pre>
-Same thing for the second client but this time assign it to a different port
+</pre></li>
+
+<li>Same thing for the second client but this time assign it to a different port
 <pre>
 <code>
 	ruby script/server -p 3001
 </code>
-</pre>
-Open up yet another terminal tab (you should have four open now) and start ClassyCAS:
+</pre></li>
+
+<li>Open up yet another terminal tab (you should have four open now) and start ClassyCAS:
 <pre>
 <code>
 	shotgun config.ru
 </code>
-</pre>
+</pre></li>
+</ol>
+
 # Navigate to the first app in your browser
 # Click on the login link, and you'll be redirected to ClassyCAS
 # Login successfully with any username and password
