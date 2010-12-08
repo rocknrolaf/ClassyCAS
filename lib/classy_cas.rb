@@ -6,13 +6,13 @@ require 'haml'
 require 'addressable/uri'
 require 'nokogiri'
 require 'rack-flash'
-
-require './lib/login_ticket'
-require './lib/proxy_ticket'
-require './lib/service_ticket'
-require './lib/ticket_granting_ticket'
-require './lib/user_store/user_store'
-require './lib/user_store/demo'
+           
+require './login_ticket'
+require './proxy_ticket'
+require './service_ticket'
+require './ticket_granting_ticket'
+require './user_store/user_store'
+require './user_store/demo'
 # require 'config/environment' #if File.exists?('config/environment')
 
 class ClassyCAS < Sinatra::Base

@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + "/../test_helper"
-require File.dirname(__FILE__) + "/../../classy_cas"
+require File.dirname(__FILE__) + "/../../lib/classy_cas"
 require "rack/flash/test"
 
 set :environment, :test

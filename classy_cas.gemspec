@@ -14,6 +14,6 @@ Gem::Specification.new do |s|
  
   s.required_rubygems_version = ">= 1.3.6"
  
-  s.files        = Dir.glob("{config,lib,public,views}/**/*") + %w(README.textile classy_cas.rb config.ru)
+  s.files        = Dir.glob("{config,lib,public,views}/**/*") + %w(README.textile config.ru)
   s.require_path = 'lib'
 end
