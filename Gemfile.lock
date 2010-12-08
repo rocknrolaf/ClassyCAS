@@ -2,23 +2,20 @@ GEM
   remote: http://rubygems.org/
   specs:
     SystemTimer (1.2)
-    addressable (2.1.2)
+    addressable (2.2.2)
     archive-tar-minitar (0.5.2)
     columnize (0.3.2)
     haml (3.0.21)
     linecache (0.43)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
-    mime-types (1.16)
-    nokogiri (1.4.3.1)
+    nokogiri (1.4.4)
     rack (1.2.1)
     rack-flash (0.1.1)
       rack
     rack-test (0.5.6)
       rack (>= 1.0)
     redis (2.0.10)
-    rest-client (1.6.1)
-      mime-types (>= 1.16)
     rr (1.0.2)
     ruby-debug (0.10.4)
       columnize (>= 0.1)
@@ -52,13 +49,12 @@ PLATFORMS
 
 DEPENDENCIES
   SystemTimer (~> 1.2)
-  addressable (~> 2.1.2)
+  addressable (~> 2.2.2)
   haml (~> 3.0.18)
-  nokogiri (~> 1.4.0)
+  nokogiri (~> 1.4.4)
   rack (~> 1.2.0)
   rack-flash
   redis (~> 2.0)
-  rest-client
   rr
   ruby-debug
   ruby-debug19
