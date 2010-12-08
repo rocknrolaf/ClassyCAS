@@ -1,5 +1,5 @@
-require File.dirname(__FILE__) + "/../test_helper"
-require File.dirname(__FILE__) + "/../../classy_cas"
+require File.dirname(__FILE__) + "./../test_helper"
+require File.dirname(__FILE__) + "./../../classy_cas"
 require "rack/flash/test"
 
 set :environment, :test
@@ -18,7 +18,7 @@ class ClassyCasTest < Test::Unit::TestCase
   end
 
   def app
-    Sinatra::Application.new
+   ClassyCAS.new
   end
   
   
