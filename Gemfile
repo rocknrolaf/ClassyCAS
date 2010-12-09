@@ -23,6 +23,6 @@ end
 group :test do
   gem 'webrat'
   gem 'shoulda'
-  gem 'rr'
+  # gem 'rr'
 end
 

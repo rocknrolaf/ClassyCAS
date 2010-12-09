@@ -5,10 +5,7 @@ unless Kernel.method_defined?(:require_relative)
 end
 
 require_relative "../test_helper"
-require_relative "../../lib/classy_cas"
 require "rack/flash/test"
-
-set :environment, :test
 
 class CasServerTest < Test::Unit::TestCase
 
@@ -19,9 +16,8 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def app
-    Sinatra::Application.new
+    app = ClassyCAS.new
   end
-
 
   def sso_session_for(username)
     @tgt = TicketGrantingTicket.new("quentin")
@@ -38,7 +34,7 @@ class CasServerTest < Test::Unit::TestCase
     assert_match(/cas:serviceResponse/, xml.root.to_s)
   end
   def assert_invalid_request_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
 
     assert_valid_xml(xml)
@@ -48,7 +44,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_authentication_success_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -57,7 +53,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_invalid_ticket_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -67,7 +63,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_authenticate_failure_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -75,7 +71,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_invalid_service_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -296,7 +292,7 @@ class CasServerTest < Test::Unit::TestCase
       setup do
         @lt = LoginTicket.new
         @lt.save!(@redis)
-        stub(UserStore).authenticate{true}
+        DemoUserStore.should_authenticate = true
       end
       #2.2.1
       #Tests in 2.2.4
@@ -418,7 +414,7 @@ class CasServerTest < Test::Unit::TestCase
           # RECOMMENDED
           # Will implement with some kind of flash message
           should "display an error message describing why login failed" do
-            stub(UserStore).authenticate {false}
+            DemoUserStore.should_authenticate = false
             @params = {:username => "quentin", :password => "badpassword", :lt => @lt.ticket}
             post "/login", @params
             follow_redirect!

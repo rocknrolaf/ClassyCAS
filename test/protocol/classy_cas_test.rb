@@ -5,16 +5,13 @@ unless Kernel.method_defined?(:require_relative)
 end
 
 require_relative "../test_helper"
-require_relative "../../lib/classy_cas"
 require "rack/flash/test"
-
-set :environment, :test
 
 class ClassyCasTest < Test::Unit::TestCase
   include Rack::Test::Methods
   include Webrat::Methods
   include Webrat::Matchers
-  include RR::Adapters::TestUnit
+  # include RR::Adapters::TestUnit
   use Rack::Session::Cookie
 
   module Rack
@@ -26,15 +23,13 @@ class ClassyCasTest < Test::Unit::TestCase
   def app
    ClassyCAS.new
   end
-  
-  
 
   def stub_successful_authenticate
-    stub(UserStore).authenticate{true}
+    DemoUserStore.should_authenticate = true
   end
   
   def stub_failed_authenticate
-    stub(UserStore).authenticate{false}
+    DemoUserStore.should_authenticate = false
   end
 
   def sso_session_for(username)

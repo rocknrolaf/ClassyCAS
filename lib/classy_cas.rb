@@ -1,13 +1,13 @@
 require 'rubygems'
 require 'bundler'
 Bundler.require
+require 'addressable/uri'
            
 require_relative 'login_ticket'
 require_relative 'proxy_ticket'
 require_relative 'service_ticket'
 require_relative 'ticket_granting_ticket'
 require_relative 'user_store/user_store'
-require_relative 'user_store/demo'
 # require 'config/environment' #if File.exists?('config/environment')
 
 class ClassyCAS < Sinatra::Base
@@ -15,13 +15,7 @@ class ClassyCAS < Sinatra::Base
   use Rack::Flash
 
   set :root, File.dirname(__FILE__)
-  set :views, Proc.new { File.join(root, "views") }
-  set :public, Proc.new { File.join(root, "public") }
-
-  before do
-    @app_config = YAML.load_file("config/classy_cas.yml")[ENV['RACK_ENV']]
-    @redis ||= instantiate_redis
-  end
+  set :public, File.join(root, "/../public")
 
   get "/" do
     redirect "/login"
@@ -33,13 +27,13 @@ class ClassyCAS < Sinatra::Base
     @gateway = [true, "true", "1", 1].include?(params[:gateway])
 
     if @renew
-      @login_ticket = LoginTicket.create!(@redis)
+      @login_ticket = LoginTicket.create!(settings.redis)
       erb :login
     elsif @gateway
       if @service_url
         if sso_session
           st = ServiceTicket.new(params[:service], sso_session.username)
-          st.save!(@redis)
+          st.save!(settings.redis)
           redirect_url = @service_url.clone
           if @service_url.query_values.nil?
             redirect_url.query_values = @service_url.query_values = {:ticket => st.ticket}
@@ -51,14 +45,14 @@ class ClassyCAS < Sinatra::Base
           redirect @service_url.to_s, 303
         end
       else
-        @login_ticket = LoginTicket.create!(@redis)
+        @login_ticket = LoginTicket.create!(settings.redis)
         erb :login
       end
     else
       if sso_session
         if @service_url
           st = ServiceTicket.new(params[:service], sso_session.username)
-          st.save!(@redis)
+          st.save!(settings.redis)
           redirect_url = @service_url.clone
           if @service_url.query_values.nil?
             redirect_url.query_values = @service_url.query_values = {:ticket => st.ticket}
@@ -67,10 +61,10 @@ class ClassyCAS < Sinatra::Base
           end
           redirect redirect_url.to_s, 303
         else
-          return erb :already_logged_in
+          erb :logged_in
         end
       else
-        @login_ticket = LoginTicket.create!(@redis)
+        @login_ticket = LoginTicket.create!(settings.redis)
         erb :login
       end
     end
@@ -87,15 +81,15 @@ class ClassyCAS < Sinatra::Base
     # Spec is undefined about what to do without these params, so redirecting to credential requestor
     redirect "/login", 303 unless username && password && login_ticket
 
-    if Demo.authenticate(username, password)
+    if settings.user_store.authenticate(username, password)
       tgt = TicketGrantingTicket.new(username)
-      tgt.save!(@redis)
+      tgt.save!(settings.redis)
       cookie = tgt.to_cookie(request.host)
       response.set_cookie(cookie[0], cookie[1])
 
       if service_url && !warn
         st = ServiceTicket.new(service_url, username)
-        st.save!(@redis)
+        st.save!(settings.redis)
         redirect service_url + "?ticket=#{st.ticket}", 303
       else
         erb :logged_in
@@ -134,7 +128,7 @@ class ClassyCAS < Sinatra::Base
   get '/logout' do
     url = params[:url]
     if sso_session
-      @sso_session.destroy!(@redis)
+      @sso_session.destroy!(settings.redis)
       flash.now[:notice] = "Logout Successful."
       if url
         msg = "  The application you just logged out of has provided a link it would like you to follow."
@@ -142,26 +136,27 @@ class ClassyCAS < Sinatra::Base
         flash.now[:notice] += msg
       end
     end
-    @login_ticket = LoginTicket.create!(@redis)
+    @login_ticket = LoginTicket.create!(settings.redis)
     @logout = true
     erb :login
   end
 
   private
     def sso_session
-      @sso_session ||= TicketGrantingTicket.validate(request.cookies["tgt"], @redis)
+      @sso_session ||= TicketGrantingTicket.validate(request.cookies["tgt"], settings.redis)
     end
   
     def ticket_granting_ticket
-      @ticket_granting_ticket = sso_session
+      @ticket_granting_ticket ||= sso_session
       @ticket_granting_ticket
     end
+    
     def login_ticket
-      @login_ticket ||= LoginTicket.validate!(params[:lt], @redis)
+      @login_ticket ||= LoginTicket.validate!(params[:lt], settings.redis)
     end
 
     def service_ticket
-      @service_ticket ||= ServiceTicket.find!(params[:ticket], @redis)
+      @service_ticket ||= ServiceTicket.find!(params[:ticket], settings.redis)
     end
 
     def render_validation_error(code, message = nil)
@@ -185,22 +180,22 @@ class ClassyCAS < Sinatra::Base
       namespace_hack(xml)
     end
   
-    def instantiate_redis
-      if redis_configured?
-          Redis.new(:host => @app_config['redis_host'], 
-                    :port => @app_config['redis_port'], 
-                    :password =>  @app_config['redis_password'])
-      else
-        Redis.new
-      end    
-    end
+    # def instantiate_redis
+    #   if redis_configured?
+    #       Redis.new(:host => @app_config['redis_host'], 
+    #                 :port => @app_config['redis_port'], 
+    #                 :password =>  @app_config['redis_password'])
+    #   else
+    #     Redis.new
+    #   end    
+    # end
   
-    def redis_configured?
-      !@app_config.nil? &&
-      @app_config['redis_host'] &&
-      @app_config['redis_port'] &&
-      @app_config['redis_password']    
-    end
+    # def redis_configured?
+    #   !@app_config.nil? &&
+    #   @app_config['redis_host'] &&
+    #   @app_config['redis_port'] &&
+    #   @app_config['redis_password']    
+    # end
   
 
     #TIMCASE - Nokogiri will not allow a namespace to be used before
