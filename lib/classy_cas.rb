@@ -1,10 +1,6 @@
 require 'rubygems'
-require 'bundler/setup'
-require 'sinatra'
-require 'redis'
-require 'addressable/uri'
-require 'nokogiri'
-require 'rack-flash'
+require 'bundler'
+Bundler.require
            
 require_relative 'login_ticket'
 require_relative 'proxy_ticket'

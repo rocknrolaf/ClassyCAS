@@ -1,5 +1,11 @@
-require File.dirname(__FILE__) + "/../test_helper"
-require 'lib/ticket_granting_ticket'
+unless Kernel.method_defined?(:require_relative)
+  require 'rubygems'
+  require 'bundler'
+  Bundler.require :test, :default
+end
+
+require_relative '../test_helper'
+require_relative '../../lib/ticket_granting_ticket'
 
 class TicketGrantingTicketTest < Test::Unit::TestCase
   context "A TicketGrantingTicket" do

@@ -1,5 +1,11 @@
-require File.dirname(__FILE__) + "/../test_helper"
-require File.dirname(__FILE__) + "/../../lib/classy_cas"
+unless Kernel.method_defined?(:require_relative)
+  require 'rubygems'
+  require 'bundler'
+  Bundler.require :test, :default
+end
+
+require_relative "../test_helper"
+require_relative "../../lib/classy_cas"
 require "rack/flash/test"
 
 set :environment, :test
