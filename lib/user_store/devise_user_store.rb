@@ -1,6 +1,6 @@
 require 'rest_client'
 
-class Devise < UserStore
+class DeviseUserStore < UserStore
   
   def self.authenticate(username, password)
     app_config = YAML.load_file(File.dirname(__FILE__) + "/../config/classy_cas.yml")[ENV['RACK_ENV']]

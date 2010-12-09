@@ -7,7 +7,10 @@ require_relative 'login_ticket'
 require_relative 'proxy_ticket'
 require_relative 'service_ticket'
 require_relative 'ticket_granting_ticket'
+
 require_relative 'user_store/user_store'
+require_relative 'user_store/demo'
+
 # require 'config/environment' #if File.exists?('config/environment')
 
 class ClassyCAS < Sinatra::Base
