@@ -4,8 +4,8 @@ GEM
     SystemTimer (1.2)
     addressable (2.2.2)
     archive-tar-minitar (0.5.2)
+    backports (1.18.2)
     columnize (0.3.2)
-    haml (3.0.21)
     linecache (0.43)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -50,7 +50,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer (~> 1.2)
   addressable (~> 2.2.2)
-  haml (~> 3.0.18)
+  backports
   nokogiri (~> 1.4.4)
   rack (~> 1.2.0)
   rack-flash

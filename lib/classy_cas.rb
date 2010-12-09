@@ -2,17 +2,16 @@ require 'rubygems'
 require 'bundler/setup'
 require 'sinatra'
 require 'redis'
-require 'haml'
 require 'addressable/uri'
 require 'nokogiri'
 require 'rack-flash'
            
-require './login_ticket'
-require './proxy_ticket'
-require './service_ticket'
-require './ticket_granting_ticket'
-require './user_store/user_store'
-require './user_store/demo'
+require_relative 'login_ticket'
+require_relative 'proxy_ticket'
+require_relative 'service_ticket'
+require_relative 'ticket_granting_ticket'
+require_relative 'user_store/user_store'
+require_relative 'user_store/demo'
 # require 'config/environment' #if File.exists?('config/environment')
 
 class ClassyCAS < Sinatra::Base
@@ -39,7 +38,7 @@ class ClassyCAS < Sinatra::Base
 
     if @renew
       @login_ticket = LoginTicket.create!(@redis)
-      haml :login
+      erb :login
     elsif @gateway
       if @service_url
         if sso_session
@@ -57,7 +56,7 @@ class ClassyCAS < Sinatra::Base
         end
       else
         @login_ticket = LoginTicket.create!(@redis)
-        haml :login
+        erb :login
       end
     else
       if sso_session
@@ -72,7 +71,7 @@ class ClassyCAS < Sinatra::Base
           end
           redirect redirect_url.to_s, 303
         else
-          return haml :already_logged_in
+          return erb :already_logged_in
         end
       else
         @login_ticket = LoginTicket.create!(@redis)
@@ -103,7 +102,7 @@ class ClassyCAS < Sinatra::Base
         st.save!(@redis)
         redirect service_url + "?ticket=#{st.ticket}", 303
       else
-        haml :logged_in
+        erb :logged_in
       end
     else
       flash[:error] = "Login was not successful."

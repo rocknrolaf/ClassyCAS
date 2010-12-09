@@ -1,15 +1,18 @@
 source "http://rubygems.org"
 gem 'sinatra', '1.1'
 gem 'redis', '~>2.0'
-gem 'haml', '~>3.0.18'
 gem 'addressable', '~>2.2.2'
 gem 'nokogiri', '~>1.4.4'
 gem 'rack', '~>1.2.0'
 gem 'rack-flash'
 # gem 'rest-client' # Used for devise client.
 
-# If running under 1.8, Mongrel warns to install this.
-gem "SystemTimer", "~>1.2", :platforms => [:ruby_18]
+platforms :ruby_18 do
+  # If running under 1.8, Mongrel warns to install this.
+  gem "SystemTimer", "~>1.2"
+  # Doing our part to slowly, but surely pull everyone up to 1.9...
+  gem "backports"
+end
 
 group :test, :development do
   gem "shotgun"
