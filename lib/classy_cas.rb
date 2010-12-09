@@ -1,17 +1,21 @@
 require 'rubygems'
 require 'bundler'
 Bundler.require
+# Bundler.require doesn't seem to be pulling this in when used as gem...
+require 'sinatra'
+require 'redis'
+require 'nokogiri'
+require 'rack'
+require 'rack-flash'
+require 'backports'
+require 'system_timer'
+
 require 'addressable/uri'
            
 require_relative 'login_ticket'
 require_relative 'proxy_ticket'
 require_relative 'service_ticket'
 require_relative 'ticket_granting_ticket'
-
-require_relative 'user_store/user_store'
-require_relative 'user_store/demo'
-
-# require 'config/environment' #if File.exists?('config/environment')
 
 class ClassyCAS < Sinatra::Base
   use Rack::Session::Cookie
@@ -84,7 +88,7 @@ class ClassyCAS < Sinatra::Base
     # Spec is undefined about what to do without these params, so redirecting to credential requestor
     redirect "/login", 303 unless username && password && login_ticket
 
-    if settings.user_store.authenticate(username, password)
+    if warden.authenticate!
       tgt = TicketGrantingTicket.new(username)
       tgt.save!(settings.redis)
       cookie = tgt.to_cookie(request.host)

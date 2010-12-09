@@ -6,7 +6,6 @@ require './lib/classy_cas'
 class ClassyCAS
   set :redis, Proc.new { Redis.new()}
   set :client_sites, [ "http://casclientone.heroku.com", 'http://casclienttwo.heroku.com']
-  set :user_store, DemoUserStore
 end
 
 run ClassyCAS

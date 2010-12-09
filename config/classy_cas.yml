@@ -1,8 +1,0 @@
-# config/config.yml
-development:
-  userstore: demo #devise, local_db, or demo    
-  user_store_url: http://userdome.heroku.com
-  client_sites: #this is for logout on logout an iframe will be rendered for each of these
-    - "http://casclientone.heroku.com"
-    - 'http://casclienttwo.heroku.com'
-

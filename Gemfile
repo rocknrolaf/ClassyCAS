@@ -5,6 +5,7 @@ gem 'addressable', '~>2.2.2'
 gem 'nokogiri', '~>1.4.4'
 gem 'rack', '~>1.2.0'
 gem 'rack-flash'
+gem 'warden'
 # gem 'rest-client' # Used for devise client.
 
 platforms :ruby_18 do
