@@ -18,11 +18,27 @@ require_relative 'service_ticket'
 require_relative 'ticket_granting_ticket'
 
 class ClassyCAS < Sinatra::Base
-  use Rack::Session::Cookie
-  use Rack::Flash
+  set :redis, Proc.new { Redis.new } unless settings.respond_to?(:redis)
+  set :client_sites, [ "http://localhost:3001", 'http://localhost:3002'] unless settings.respond_to?(:client_sites)
 
   set :root, File.dirname(__FILE__)
   set :public, File.join(root, "/../public")
+
+  configure :development do
+    set :dump_errors
+  end
+
+  # Called in your Rack initialization.
+  def self.configure_warden!(manager)
+    manager.failure_app = self
+  end
+
+  Warden::Manager.before_failure do |env, opts|
+    params = Rack::Request.new(env).params
+    # env["rack-flash"] ||= {} 
+    env["x-rack.flash"].error "Login was not successful."
+    env["PATH_INFO"] = "/login"
+  end
 
   get "/" do
     redirect "/login"
@@ -88,22 +104,20 @@ class ClassyCAS < Sinatra::Base
     # Spec is undefined about what to do without these params, so redirecting to credential requestor
     redirect "/login", 303 unless username && password && login_ticket
 
-    if warden.authenticate!
-      tgt = TicketGrantingTicket.new(username)
-      tgt.save!(settings.redis)
-      cookie = tgt.to_cookie(request.host)
-      response.set_cookie(cookie[0], cookie[1])
+    # Failures will throw back to self, which we've registered with Warden to handle login failures
+    warden.authenticate!
+    debugger
+    tgt = TicketGrantingTicket.new(username)
+    tgt.save!(settings.redis)
+    cookie = tgt.to_cookie(request.host)
+    response.set_cookie(cookie[0], cookie[1])
 
-      if service_url && !warn
-        st = ServiceTicket.new(service_url, username)
-        st.save!(settings.redis)
-        redirect service_url + "?ticket=#{st.ticket}", 303
-      else
-        erb :logged_in
-      end
+    if service_url && !warn
+      st = ServiceTicket.new(service_url, username)
+      st.save!(settings.redis)
+      redirect service_url + "?ticket=#{st.ticket}", 303
     else
-      flash[:error] = "Login was not successful."
-      redirect "/login", 303
+      erb :logged_in
     end
   end
 
@@ -148,6 +162,10 @@ class ClassyCAS < Sinatra::Base
     erb :login
   end
 
+  def warden
+    request.env["warden"]
+  end
+
   private
     def sso_session
       @sso_session ||= TicketGrantingTicket.validate(request.cookies["tgt"], settings.redis)
@@ -186,24 +204,6 @@ class ClassyCAS < Sinatra::Base
       end
       namespace_hack(xml)
     end
-  
-    # def instantiate_redis
-    #   if redis_configured?
-    #       Redis.new(:host => @app_config['redis_host'], 
-    #                 :port => @app_config['redis_port'], 
-    #                 :password =>  @app_config['redis_password'])
-    #   else
-    #     Redis.new
-    #   end    
-    # end
-  
-    # def redis_configured?
-    #   !@app_config.nil? &&
-    #   @app_config['redis_host'] &&
-    #   @app_config['redis_port'] &&
-    #   @app_config['redis_password']    
-    # end
-  
 
     #TIMCASE - Nokogiri will not allow a namespace to be used before
     #It's declared, why this is I don't know.

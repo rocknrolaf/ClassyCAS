@@ -26,12 +26,9 @@ require_relative "../lib/classy_cas"
 class ClassyCAS
   set :environment, :test
   
-  configure :test do
-    require_relative '../lib/user_store/demo_user_store'
-    
+  configure :test do    
     set :redis, Proc.new { Redis.new()}
     set :client_sites, [ "http://example.org", 'http://example.com']
-    set :user_store, DemoUserStore
   end
 end
 
