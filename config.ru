@@ -3,7 +3,6 @@ require 'bundler'
 Bundler.require :default, :development
 require './lib/classy_cas'
 
-
 use Rack::Session::Cookie, :secret => "sdhjlfhaothuowqerwb24y803u023hfds23r3rbweruh23r"
 
 User = Struct.new(:login, :password)

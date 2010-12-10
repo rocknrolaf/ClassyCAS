@@ -37,7 +37,6 @@ class ClassyCAS < Sinatra::Base
 
   Warden::Manager.before_failure do |env, opts|
     params = Rack::Request.new(env).params
-    # env["rack-flash"] ||= {} 
     env["x-rack.flash"].error "Login was not successful."
     env["PATH_INFO"] = "/login"
   end
@@ -112,7 +111,7 @@ class ClassyCAS < Sinatra::Base
     tgt = TicketGrantingTicket.new(username)
     tgt.save!(settings.redis)
     cookie = tgt.to_cookie(request.host)
-    response.set_cookie(cookie[0], cookie[1])
+    response.set_cookie(*cookie)
 
     if service_url && !warn
       st = ServiceTicket.new(service_url, username)
@@ -150,8 +149,11 @@ class ClassyCAS < Sinatra::Base
 
   get '/logout' do
     url = params[:url]
+
     if sso_session
       @sso_session.destroy!(settings.redis)
+      response.delete_cookie(*sso_session.to_cookie(request.host))
+      warden.logout
       flash.now[:notice] = "Logout Successful."
       if url
         msg = "  The application you just logged out of has provided a link it would like you to follow."
