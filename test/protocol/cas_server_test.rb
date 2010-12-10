@@ -16,7 +16,16 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def app
-    app = ClassyCAS.new
+    app = ::Rack::Builder.app do
+      use ::Rack::Session::Cookie, :secret => "sdhjlfhaothuowqerwb24y803u023hfds23r3rbweruh23r"
+      
+      use Warden::Manager do |manager|
+        manager.default_strategies :simple_strategy
+        ClassyCAS.configure_warden!(manager)
+      end
+
+      run ClassyCAS
+    end
   end
 
   def sso_session_for(username)
@@ -292,7 +301,6 @@ class CasServerTest < Test::Unit::TestCase
       setup do
         @lt = LoginTicket.new
         @lt.save!(@redis)
-        DemoUserStore.should_authenticate = true
       end
       #2.2.1
       #Tests in 2.2.4
@@ -314,14 +322,14 @@ class CasServerTest < Test::Unit::TestCase
 
           assert !last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => "LT-FAKE"}
+          post "/login", {:username => "test", :password => "password", :lt => "LT-FAKE"}
 
           assert !last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => @lt.ticket}
+          post "/login", {:username => "test", :password => "password", :lt => @lt.ticket}
           assert last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => @lt.ticket}
+          post "/login", {:username => "test", :password => "password", :lt => @lt.ticket}
           assert !last_response.ok?
         end
       end
@@ -334,7 +342,7 @@ class CasServerTest < Test::Unit::TestCase
       # 2.2.4
       context "response" do
         context "successful login:" do
-          setup { @params = {:username => "quentin", :password => "testpassword", :lt => @lt.ticket} }
+          setup { @params = {:username => "test", :password => "password", :lt => @lt.ticket} }
 
           should 'set a ticket-granting cookie' do
             post "/login", @params
@@ -414,8 +422,7 @@ class CasServerTest < Test::Unit::TestCase
           # RECOMMENDED
           # Will implement with some kind of flash message
           should "display an error message describing why login failed" do
-            DemoUserStore.should_authenticate = false
-            @params = {:username => "quentin", :password => "badpassword", :lt => @lt.ticket}
+            @params = {:username => "test", :password => "badpassword", :lt => @lt.ticket}
             post "/login", @params
             follow_redirect!
             assert_match /Login was not successful/, last_response.body

@@ -5,7 +5,6 @@ require './lib/classy_cas'
 
 
 use Rack::Session::Cookie, :secret => "sdhjlfhaothuowqerwb24y803u023hfds23r3rbweruh23r"
-use Rack::Flash, :accessorize => [:notice, :error]
 
 User = Struct.new(:login, :password)
 Warden::Strategies.add(:simple_strategy) do
@@ -14,7 +13,6 @@ Warden::Strategies.add(:simple_strategy) do
   end
     
   def authenticate!
-    debugger
     if params["username"] == "test" && params["password"] == "password"
       u = User.new(params["username"], params["password"])
       success!(u)

@@ -18,6 +18,8 @@ require_relative 'service_ticket'
 require_relative 'ticket_granting_ticket'
 
 class ClassyCAS < Sinatra::Base
+  use Rack::Flash, :accessorize => [:notice, :error]
+  
   set :redis, Proc.new { Redis.new } unless settings.respond_to?(:redis)
   set :client_sites, [ "http://localhost:3001", 'http://localhost:3002'] unless settings.respond_to?(:client_sites)
 
@@ -106,7 +108,7 @@ class ClassyCAS < Sinatra::Base
 
     # Failures will throw back to self, which we've registered with Warden to handle login failures
     warden.authenticate!
-    debugger
+
     tgt = TicketGrantingTicket.new(username)
     tgt.save!(settings.redis)
     cookie = tgt.to_cookie(request.host)
