@@ -45,10 +45,7 @@ module ClassyCAS
     end
     
     Warden::Manager.before_failure do |env, opts|
-      puts "Login failed"
-      # params = Rack::Request.new(env).params
       env["x-rack.flash"].error "Login was not successful."
-      # env["PATH_INFO"] = "/login"
     end
 
     get "/" do
@@ -116,7 +113,7 @@ module ClassyCAS
       redirect "/login", 303 unless username && password && login_ticket
       # Failures will throw back to self, which we've registered with Warden to handle login failures
       warden.authenticate!(:scope => :cas, :action => "login")
-    
+
       tgt = TicketGrantingTicket.new(username)
       tgt.save!(settings.redis)
       cookie = tgt.to_cookie(request.host)
