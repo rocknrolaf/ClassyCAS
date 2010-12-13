@@ -5,4 +5,5 @@ require './lib/classy_cas'
 
 redis_uri = URI.parse(ENV["REDISTOGO_URL"])
 
-run ClassyCAS::Server, :redis => Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password => redis_uri.password)
+ClassyCAS::Server.redis = Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password => redis_uri.password)
+run ClassyCAS::Server
