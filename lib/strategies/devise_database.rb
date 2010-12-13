@@ -9,7 +9,6 @@ module ClassyCAS
       end
       
       def authenticate!
-        debugger
         resource = valid_password? && User.find_for_database_authentication(authentication_hash)
 
         if validate(resource){ resource.valid_password?(password) }

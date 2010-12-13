@@ -46,7 +46,6 @@ module ClassyCAS
     
     Warden::Manager.before_failure do |env, opts|
       puts "Login failed"
-      debugger
       # params = Rack::Request.new(env).params
       env["x-rack.flash"].error "Login was not successful."
       # env["PATH_INFO"] = "/login"
