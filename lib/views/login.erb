@@ -10,16 +10,16 @@
         <div class="content login">
           <div class="flash">
             <%# TODO: fix issues with rack flash%>
-            <%# if flash.has?(:error) %>
-            <!-- <div class="message error">
-              <p><%#= flash[:error]%></p>
-            </div> -->
-            <%# end %>
-            <%# if flash.has?(:notice) %>
-            <!-- <div class="message notice">
-              <p><%#= flash[:notice]%></p>
-            </div> -->
-            <%# end %>
+            <% if flash.has?(:error) %>
+            <div class="message error">
+              <p><%= flash[:error]%></p>
+            </div>
+            <% end %>
+            <% if flash.has?(:notice) %>
+            <div class="message notice">
+              <p><%= flash[:notice]%></p>
+            </div>
+            <% end %>
           </div>
           <form action='/login' method='post' class ='form login'>
             <div class="group wat-cf">

@@ -16,16 +16,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def app
-    app = ::Rack::Builder.app do
-      use ::Rack::Session::Cookie, :secret => "sdhjlfhaothuowqerwb24y803u023hfds23r3rbweruh23r"
-      
-      use Warden::Manager do |manager|
-        manager.default_strategies :simple_strategy
-        ClassyCAS.configure_warden!(manager)
-      end
-
-      run ClassyCAS
-    end
+    app ||= ClassyCAS::Server
   end
 
   def sso_session_for(username)

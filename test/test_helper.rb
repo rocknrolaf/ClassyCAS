@@ -23,7 +23,7 @@ end
 
 require_relative "../lib/classy_cas"
 
-class ClassyCAS
+class ClassyCAS::Server
   set :environment, :test
   
   configure :test do    
