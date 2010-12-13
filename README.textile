@@ -12,6 +12,14 @@ Single sign-on server based on the "CAS protocol":http://www.jasig.org/cas/proto
 
 On the client side, ClassyCAS pairs up nicely with "OmniAuth":https://github.com/intridea/omniauth and it's "CAS client implementation":https://github.com/intridea/omniauth/tree/master/oa-enterprise .  However clients are not only limited to either RubyonRails or Sinatra apps, because the server is built on the "CAS protocol":http://www.jasig.org/cas/protocol any compliant client in any language or framework which adheres to the protocol is supported, thus ClassyCAS is also well to suited to environments where Single sign-on is desired but where the ecosystem of applications is heterogeneous in terms of platforms.
 
+h2. Demo on Heroku
+
+* "Site 1 Protected Content":http://casclientone.heroku.com/
+* "Site 2 Protected Content":http://casclienttwo.heroku.com/
+* "ClassyCAS Server":http://classycas.heroku.com/
+
+Username is "test", password is "password".
+
 
 h2. Quick Start Demo
 
