@@ -1,8 +1,11 @@
-require File.dirname(__FILE__) + "/../test_helper"
-require File.dirname(__FILE__) + "/../../classy_cas"
-require "rack/flash/test"
+unless Kernel.method_defined?(:require_relative)
+  require 'rubygems'
+  require 'bundler'
+  Bundler.require :test, :default
+end
 
-set :environment, :test
+require_relative "../test_helper"
+require "rack/flash/test"
 
 class CasServerTest < Test::Unit::TestCase
 
@@ -13,9 +16,8 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def app
-    Sinatra::Application.new
+    app ||= ClassyCAS::Server
   end
-
 
   def sso_session_for(username)
     @tgt = TicketGrantingTicket.new("quentin")
@@ -32,7 +34,7 @@ class CasServerTest < Test::Unit::TestCase
     assert_match(/cas:serviceResponse/, xml.root.to_s)
   end
   def assert_invalid_request_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
 
     assert_valid_xml(xml)
@@ -42,7 +44,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_authentication_success_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -51,7 +53,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_invalid_ticket_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -61,7 +63,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_authenticate_failure_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -69,7 +71,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def assert_invalid_service_xml_response(last_response)
-    assert_equal("application/xml", last_response.content_type)
+    assert_equal("application/xml;charset=utf-8", last_response.content_type)
     xml = Nokogiri::XML.parse(last_response.body)
     assert @xsd.validate(xml)
 
@@ -290,7 +292,6 @@ class CasServerTest < Test::Unit::TestCase
       setup do
         @lt = LoginTicket.new
         @lt.save!(@redis)
-        stub(UserStore).authenticate{true}
       end
       #2.2.1
       #Tests in 2.2.4
@@ -312,14 +313,14 @@ class CasServerTest < Test::Unit::TestCase
 
           assert !last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => "LT-FAKE"}
+          post "/login", {:username => "test", :password => "password", :lt => "LT-FAKE"}
 
           assert !last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => @lt.ticket}
+          post "/login", {:username => "test", :password => "password", :lt => @lt.ticket}
           assert last_response.ok?
 
-          post "/login", {:username => "quentin", :password => "testpassword", :lt => @lt.ticket}
+          post "/login", {:username => "test", :password => "password", :lt => @lt.ticket}
           assert !last_response.ok?
         end
       end
@@ -332,7 +333,7 @@ class CasServerTest < Test::Unit::TestCase
       # 2.2.4
       context "response" do
         context "successful login:" do
-          setup { @params = {:username => "quentin", :password => "testpassword", :lt => @lt.ticket} }
+          setup { @params = {:username => "test", :password => "password", :lt => @lt.ticket} }
 
           should 'set a ticket-granting cookie' do
             post "/login", @params
@@ -412,8 +413,7 @@ class CasServerTest < Test::Unit::TestCase
           # RECOMMENDED
           # Will implement with some kind of flash message
           should "display an error message describing why login failed" do
-            stub(UserStore).authenticate {false}
-            @params = {:username => "quentin", :password => "badpassword", :lt => @lt.ticket}
+            @params = {:username => "test", :password => "badpassword", :lt => @lt.ticket}
             post "/login", @params
             follow_redirect!
             assert_match /Login was not successful/, last_response.body
