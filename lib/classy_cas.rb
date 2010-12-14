@@ -44,10 +44,6 @@ module ClassyCAS
       set :dump_errors
     end
     
-    Warden::Manager.before_failure do |env, opts|
-      env["x-rack.flash"].error "Login was not successful."
-    end
-
     get "/" do
       redirect "/login"
     end
@@ -112,7 +108,7 @@ module ClassyCAS
       # Spec is undefined about what to do without these params, so redirecting to credential requestor
       redirect "/login", 303 unless username && password && login_ticket
       # Failures will throw back to self, which we've registered with Warden to handle login failures
-      warden.authenticate!(:scope => :cas, :action => "login")
+      warden.authenticate!(:scope => :cas, :action => 'unauthenticated')
 
       tgt = TicketGrantingTicket.new(username)
       tgt.save!(settings.redis)
@@ -169,6 +165,12 @@ module ClassyCAS
       end
       @login_ticket = LoginTicket.create!(settings.redis)
       @logout = true
+      erb :login
+    end
+    
+    post "/unauthenticated" do
+      @login_ticket = LoginTicket.create!(settings.redis)
+      flash[:error] = "Login was not successful"
       erb :login
     end
     
