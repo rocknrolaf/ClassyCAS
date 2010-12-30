@@ -9,6 +9,7 @@ require 'rack'
 require 'rack-flash' 
 require 'backports'
 require 'system_timer'
+require 'warden'
 
 require 'addressable/uri'
 
@@ -55,7 +56,7 @@ module ClassyCAS
     
       if @renew
         @login_ticket = LoginTicket.create!(settings.redis)
-        erb :login
+        render_login
       elsif @gateway
         if @service_url
           if sso_session
@@ -73,7 +74,7 @@ module ClassyCAS
           end
         else
           @login_ticket = LoginTicket.create!(settings.redis)
-          erb :login
+          render_login
         end
       else
         if sso_session
@@ -88,11 +89,11 @@ module ClassyCAS
             end
             redirect redirect_url.to_s, 303
           else
-            erb :logged_in
+            render_logged_in
           end
         else
           @login_ticket = LoginTicket.create!(settings.redis)
-          erb :login
+          render_login
         end
       end
     end
@@ -120,7 +121,7 @@ module ClassyCAS
         st.save!(settings.redis)
         redirect service_url + "?ticket=#{st.ticket}", 303
       else
-        erb :logged_in
+        render_login
       end
     end
     
@@ -165,13 +166,21 @@ module ClassyCAS
       end
       @login_ticket = LoginTicket.create!(settings.redis)
       @logout = true
-      erb :login
+      render_login
     end
     
     post "/unauthenticated" do
       @login_ticket = LoginTicket.create!(settings.redis)
       flash[:error] = "Login was not successful"
+      render_login
+    end
+    
+    def render_login
       erb :login
+    end
+    
+    def render_logged_in
+      erb :logged_in
     end
     
     private
