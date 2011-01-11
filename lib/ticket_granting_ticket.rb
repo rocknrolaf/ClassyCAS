@@ -29,7 +29,7 @@ class TicketGrantingTicket
   def to_cookie(domain, path = "/")
     ["tgt", {
       :value => ticket,
-      :domain => domain,
+      # :domain => domain,
       :path => path
     }]
   end
