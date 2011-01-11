@@ -152,7 +152,7 @@ h2. What's Missing
 
 h2. Resources
 
-* "ClassyCAS client example app":git@github.com:Econify/classy_cas_client_example.git
+* "ClassyCAS client example app":https://github.com/Econify/classy_cas_client_example
 * "CAS":http://www.jasig.org/cas
 * "Sinatra":http://www.sinatrarb.com/
 * "Redis":http://code.google.com/p/redis/
