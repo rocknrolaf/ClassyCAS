@@ -105,7 +105,6 @@ module ClassyCAS
       service_url = params[:service]
     
       warn = [true, "true", "1", 1].include? params[:warn]
-    
       # Spec is undefined about what to do without these params, so redirecting to credential requestor
       redirect "/login", 303 unless username && password && login_ticket
       # Failures will throw back to self, which we've registered with Warden to handle login failures
@@ -121,7 +120,7 @@ module ClassyCAS
         st.save!(settings.redis)
         redirect service_url + "?ticket=#{st.ticket}", 303
       else
-        render_login
+        render_logged_in
       end
     end
     
