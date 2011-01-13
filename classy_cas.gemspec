@@ -20,8 +20,11 @@ Gem::Specification.new do |s|
   s.add_dependency('nokogiri', '~>1.4.4')
   s.add_dependency('rack', '~>1.2.0')
   s.add_dependency('rack-flash')
-  s.add_dependency('backports') # TODO: figure out a way not to include this for 1.9
-  s.add_dependency('SystemTimer', "~>1.2") # TODO: figure out a way not to include this for 1.9
+  if RUBY_VERSION < "1.9"
+    s.add_dependency('backports')
+    s.add_dependency('SystemTimer', "~>1.2")
+  end
+  
   s.add_dependency('warden')
   
   s.files        = Dir.glob("{lib,public}/**/*") + %w(README.textile config.ru)
