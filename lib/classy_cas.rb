@@ -7,9 +7,12 @@ require 'redis'
 require 'nokogiri'
 require 'rack'
 require 'rack-flash' 
-require 'backports'
-require 'system_timer'
 require 'warden'
+
+if RUBY_VERSION < "1.9"
+  require 'backports'
+  require 'system_timer'
+end
 
 require 'addressable/uri'
 
