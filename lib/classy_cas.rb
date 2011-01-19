@@ -186,7 +186,7 @@ module ClassyCAS
     end
     
     # Override to add user info back to client applications
-    def append_user_info(xml)
+    def append_user_info(username, xml)
     end
     
     private
@@ -227,7 +227,7 @@ module ClassyCAS
             xml.parent.namespace = xml.parent.namespace_definitions.first
             xml['cas'].authenticationSuccess {
               xml['cas'].user username
-              append_user_info(xml)
+              append_user_info(username, xml)
             }
           }
         end
