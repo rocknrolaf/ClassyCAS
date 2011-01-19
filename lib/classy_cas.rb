@@ -185,6 +185,10 @@ module ClassyCAS
       erb :logged_in
     end
     
+    # Override to add user info back to client applications
+    def append_user_info(xml)
+    end
+    
     private
       def warden
         request.env["warden"]
@@ -223,6 +227,7 @@ module ClassyCAS
             xml.parent.namespace = xml.parent.namespace_definitions.first
             xml['cas'].authenticationSuccess {
               xml['cas'].user username
+              append_user_info(xml)
             }
           }
         end
