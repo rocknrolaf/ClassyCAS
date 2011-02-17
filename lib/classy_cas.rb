@@ -170,13 +170,7 @@ module ClassyCAS
       @logout = true
       render_login
     end
-    
-    post "/unauthenticated" do
-      @login_ticket = LoginTicket.create!(settings.redis)
-      flash[:error] = "Login was not successful"
-      render_login
-    end
-    
+        
     def render_login
       erb :login
     end

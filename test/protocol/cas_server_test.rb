@@ -399,22 +399,28 @@ class CasServerTest < Test::Unit::TestCase
         end
 
         context "with failure" do
-          should "return to /login as a credential requester" do
-            post "/login"
-
-            # Don't care if it's a redirect or not
+          setup do
+            @params = {:username => "test", :password => "badpassword", :lt => @lt.ticket, :service => 'foo'}
+            post "/login", @params
+            
+          end
+          should "redirect to /unauthorized but render /login" do
+            assert last_response.redirect?
             follow_redirect!
-
             assert_have_selector "input[name='username']"
             assert_have_selector "input[name='password']"
             assert_have_selector "input[name='lt']"
           end
 
+          should "preserve the service url in a hidden field" do
+            assert last_response.redirect?
+            follow_redirect!
+            assert_have_selector "input[name='service']", :value => 'foo'
+          end
+          
           # RECOMMENDED
           # Will implement with some kind of flash message
           should "display an error message describing why login failed" do
-            @params = {:username => "test", :password => "badpassword", :lt => @lt.ticket}
-            post "/login", @params
             assert_match /Login was not successful/, last_response.body
           end
 
