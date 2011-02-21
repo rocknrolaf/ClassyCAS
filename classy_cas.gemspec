@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Andrew O'Brien", "Tim Case", "Nick Browning"]
   s.email       = ["andrew@econify.com"]
-  s.homepage    = "https://github.com/Econify/ClassyCAS"
+  s.homepage    = "https://rubygems.org/gems/classy_cas"
   s.summary     = "A Central Authentication Service server built on Sinatra and Redis"
   s.description = "ClassyCAS provides private, centralized, cross-domain, platform-agnostic centralized authentication than can hook in with modern Ruby authentication systems."
 
