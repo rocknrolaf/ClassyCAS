@@ -1,22 +1,20 @@
 module ClassyCAS
   module Strategies
     class Base < Warden::Strategies::Base
-      alias :old_fail! :fail!
-      alias :old_fail :fail
       
       def valid?
         params["username"] && params["password"]
       end
       
       def fail!(message = "Failed to Login")
-        old_fail!
+        super
         redirect_to_login_with_service_url
       end
 
       # Casuses the strategy to fail, but not halt.  The strategies will cascade after this failure and warden will check the next strategy.  The last strategy to fail will have it's message displayed.
       # :api: public
       def fail(message = "Failed to Login")
-        old_fail
+        super
         redirect_to_login_with_service_url
       end
       
