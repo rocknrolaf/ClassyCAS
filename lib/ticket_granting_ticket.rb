@@ -5,6 +5,13 @@ class TicketGrantingTicket
         new(username, ticket)
       end
     end
+    
+    def create!(user, store)
+      tgt = self.new(user)
+      tgt.save!(store)
+      tgt
+    end
+    
   end
   
   attr_reader :username
@@ -25,7 +32,7 @@ class TicketGrantingTicket
   def save!(store)
     store[ticket] = username
   end
-
+    
   def to_cookie(domain, path = "/")
     ["tgt", {
       :value => ticket,
