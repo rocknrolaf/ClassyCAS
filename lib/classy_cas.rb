@@ -152,16 +152,16 @@ module ClassyCAS
     
     
     get '/logout' do
-      url = params[:url]
+      @url = params[:url]
     
       if sso_session
         @sso_session.destroy!(settings.redis)
         response.delete_cookie(*sso_session.to_cookie(request.host))
         warden.logout(:cas)
         flash.now[:notice] = "Logout Successful."
-        if url
+        if @url
           msg = "  The application you just logged out of has provided a link it would like you to follow."
-          msg += "Please <a href=\"#{url}\">click here</a> to access <a href=\"#{url}\">#{url}</a>"      
+          msg += "Please <a href=\"#{@url}\">click here</a> to access <a href=\"#{@url}\">#{@url}</a>"      
           flash.now[:notice] += msg
         end
       end
