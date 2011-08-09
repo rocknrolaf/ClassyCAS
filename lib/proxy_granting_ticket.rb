@@ -1,7 +1,7 @@
 class ProxyGrantingTicket < ProxyTicket
 
-  def self.generate_id
-    "PGT-#{ rand 100_000_000_000_000_000 }"
+  def self.prefix
+    'PGT-'
   end
 
   def create_proxy_ticket!(store)

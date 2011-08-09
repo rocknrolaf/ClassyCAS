@@ -1,46 +1,37 @@
-class ServiceTicket
-  class << self
-    def find!(ticket, store)
-      username = store.hget(ticket, :username)
-      service_url = store.hget(ticket, :service_url)
-      
-      if service_url && username
-        store.del ticket
-        new(service_url, username)
-      end
-    end
-    
-    def expire_time
-      300
-    end
-  end
-  
-  attr_reader :username, :service_url
-  
-  def initialize(service_url, username)
-    @service_url = service_url
-    @username = username
-  end
-  
-  def valid_for_service?(url)
-    service_url == url
-  end
-  
-  def ticket
-    @ticket ||= "ST-#{rand(100000000000000000)}".to_s
-  end
-  
-  def remaining_time(store)
-    store.ttl ticket
-  end
-  
-  def save!(store)
+class ServiceTicket < ProxyTicket
 
-    store.pipelined do 
-      store.hset ticket, :service_url, self.service_url
-      store.hset ticket, :username, self.username
-      store.expire ticket, self.class.expire_time
-    end
-    
+  def self.prefix
+    'ST-'
   end
+  set_ttl 300
+
+  def self.new(service_url, username, id)
+    super({ 'service_url' => service_url, 'username' => username }, id)
+  end
+
+  def self.create!(service_url, username, store)
+    ticket = new service_url, username, generate_id
+    ticket.save! store
+
+    ticket
+  end
+  def self.find!(id, store)
+    mem = id ? store.hgetall(id) : {}
+    service_url, username = mem.values_at 'service_url', 'username'
+    return unless service_url and username
+    new(service_url, username, id).destroy!(store).dup
+  end
+
+  def service_url
+    value.fetch 'service_url'
+  end
+  def username
+    value.fetch 'username'
+  end
+
+  def save(store)
+    store.hset id, 'service_url', service_url
+    store.hset id, 'username', username
+  end
+
 end

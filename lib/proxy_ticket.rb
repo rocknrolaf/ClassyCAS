@@ -1,14 +1,15 @@
 class ProxyTicket < Ticket
 
-  def self.generate_id
-    "PT-#{ rand 100_000_000_000_000_000 }"
+  alias_method :service_url, :value
+  alias_method :service_name, :service_url
+
+  def self.prefix
+    'PT-'
   end
   set_ttl 300
 
-  alias_method :service_name, :value
-
   def valid_for_service?(url)
-    value == url
+    service_url == url
   end
 
 end

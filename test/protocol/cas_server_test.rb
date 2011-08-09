@@ -487,8 +487,7 @@ class CasServerTest < Test::Unit::TestCase
     # 2.5
     context "/serviceValidate" do
       setup do
-        @st = ServiceTicket.new(@test_service_url, "quentin")
-        @st.save!(@redis)
+        @st = ServiceTicket.create!(@test_service_url, "quentin", @redis)
 
         @xsd = Nokogiri::XML::Schema(File.new(File.dirname(__FILE__) + "/cas.xsd"))
       end
@@ -592,9 +591,7 @@ class CasServerTest < Test::Unit::TestCase
         context "performing the same validation tasks as /serviceValidate" do
 
           setup do
-            @st = ServiceTicket.new(@test_service_url, "quentin")
-            @st.save!(@redis)
-
+            @st = ServiceTicket.create!(@test_service_url, "quentin", @redis)
             @xsd = Nokogiri::XML::Schema(File.new(File.dirname(__FILE__) + "/cas.xsd"))
           end
 
@@ -690,8 +687,7 @@ class CasServerTest < Test::Unit::TestCase
     # 3.1
     context "service ticket" do
       setup do
-        @st = ServiceTicket.new(@test_service_url, "quentin")
-        @st.save!(@redis)
+        @st = ServiceTicket.create!(@test_service_url, "quentin", @redis)
       end
 
       # 3.1.1
@@ -845,7 +841,7 @@ class CasServerTest < Test::Unit::TestCase
       setup do
         @tickets = [
           LoginTicket.new(1, LoginTicket.generate_id),
-          ServiceTicket.new("http://example.com", "foo"),
+          ServiceTicket.new("http://example.com", "foo", ServiceTicket.generate_id),
           TicketGrantingTicket.new("foo", TicketGrantingTicket.generate_id)
         ]
       end

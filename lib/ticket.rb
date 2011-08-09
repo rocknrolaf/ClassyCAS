@@ -8,15 +8,16 @@ class Ticket < Struct.new(:value, :id)
     attr_accessor :ttl
     alias_method :set_ttl, :ttl=
 
-    def generate_id
+    def prefix
       raise NotImplementedError
     end
 
-    def create!(value, store)
-      ticket = new value, generate_id
-      ticket.save! store
+    def generate_id
+      "#{ prefix }#{ rand 100_000_000_000_000_000 }"
+    end
 
-      ticket
+    def create!(value, store)
+      new(value, generate_id).save! store
     end
     def validate(id, store)
       value = store[id] if id
@@ -24,8 +25,7 @@ class Ticket < Struct.new(:value, :id)
     end
     def validate!(id, store)
       return unless ticket = validate(id, store)
-      ticket.destroy! store
-      new ticket.value, generate_id
+      ticket.destroy!(store).dup
     end
 
     def inherited(base)
@@ -36,20 +36,32 @@ class Ticket < Struct.new(:value, :id)
   extend ClassMethods
 
   def save!(store)
-    store[id] = value
-    store.expire id, ttl if ttl < INFINITE
+    store.pipelined do
+      save store
+      store.expire id, ttl if ttl < INFINITE
+    end
+    self
   end
   def destroy!(store)
     store.del id
+    self
   end
   def remaining_time(store)
     ttl < INFINITE ? store.ttl(id) : INFINITE
+  end
+  def dup
+    duplicate = super
+    duplicate.id = self.class.generate_id
+    duplicate
   end
 
   protected
 
     def ttl
       self.class.ttl
+    end
+    def save(store)
+      store[id] = value
     end
 
 end

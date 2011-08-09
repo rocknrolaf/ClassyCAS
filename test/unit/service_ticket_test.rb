@@ -12,8 +12,7 @@ class ServiceTicketTest < Test::Unit::TestCase
     setup do
       @redis = Redis.new
       assert_not_nil @redis
-      @st = ServiceTicket.new("http://localhost", "quentin")
-      @st.save!(@redis)
+      @st = ServiceTicket.create!("http://localhost", "quentin", @redis)
     end
     # Most tests are in test/protocol.  Tests here are outside of the protocol, but are necessary anyway.
     context 'find!' do
@@ -25,13 +24,13 @@ class ServiceTicketTest < Test::Unit::TestCase
         assert_equal("quentin", st2.username)
         assert_equal("http://localhost", st2.service_url)
       end
-      
+
       should "only be retrievable once" do
         st2 = ServiceTicket.find!(@st.ticket, @redis)
         assert_nil ServiceTicket.find!(@st.ticket, @redis)
-      end      
+      end
     end
-    
+
     context 'valid for service?' do
       setup do
         @retrieved_ticket = ServiceTicket.find!(@st.ticket, @redis)
@@ -39,12 +38,12 @@ class ServiceTicketTest < Test::Unit::TestCase
       should 'be true if url passed in is the same as in the the store' do
         assert @retrieved_ticket.valid_for_service?("http://localhost")
       end
-      
+
       should 'be false if url passed in is not the same as in the store' do
-        assert_false @retrieved_ticket.valid_for_service?("http://wronghost")      
+        assert_false @retrieved_ticket.valid_for_service?("http://wronghost")
       end
     end
-    
-    
+
+
   end
 end
