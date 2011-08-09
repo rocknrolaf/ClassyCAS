@@ -20,8 +20,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def sso_session_for(username)
-    @tgt = TicketGrantingTicket.new("quentin")
-    @tgt.save!(@redis)
+    @tgt = TicketGrantingTicket.create!("quentin", @redis)
     cookie = @tgt.to_cookie("localhost", "/")
 
     # Rack's set_cookie appears to be worse than useless, unless I'm mistaken
@@ -290,8 +289,7 @@ class CasServerTest < Test::Unit::TestCase
     #2.2
     context "/login as credential acceptor" do
       setup do
-        @lt = LoginTicket.new
-        @lt.save!(@redis)
+        @lt = LoginTicket.create! @redis
       end
       #2.2.1
       #Tests in 2.2.4
@@ -402,7 +400,7 @@ class CasServerTest < Test::Unit::TestCase
           setup do
             @params = {:username => "test", :password => "badpassword", :lt => @lt.ticket, :service => 'foo'}
             post "/login", @params
-            
+
           end
           should "redirect to /unauthorized but render /login" do
             assert last_response.redirect?
@@ -417,7 +415,7 @@ class CasServerTest < Test::Unit::TestCase
             follow_redirect!
             assert_have_selector "input[name='service']", :value => 'foo'
           end
-          
+
           # RECOMMENDED
           # Will implement with some kind of flash message
           should "display an error message describing why login failed" do
@@ -456,15 +454,15 @@ class CasServerTest < Test::Unit::TestCase
       end
 
       context "optional url parameter" do
-        setup do 
+        setup do
           get '/logout', {:url => 'http://myreturn.app'},"HTTP_COOKIE" => @cookie
         end
-        
-        must 'display a page stating the user has been logged out' do          
+
+        must 'display a page stating the user has been logged out' do
           msg = "The application you just logged out of has provided a link it would like you to follow."
           assert_match msg, last_response.body
         end
-        
+
         should 'provide a link to the provided URL' do
           msg = "Please <a href=\"http://myreturn.app\">click here</a> to access <a href=\"http://myreturn.app\">http://myreturn.app</a>"
           assert_match msg, last_response.body
@@ -710,7 +708,6 @@ class CasServerTest < Test::Unit::TestCase
         # MUST
         should "be valid for only one attempt" do
           assert ServiceTicket.find!(@st.ticket, @redis)
-
           assert !ServiceTicket.find!(@st.ticket, @redis)
         end
 
@@ -733,8 +730,7 @@ class CasServerTest < Test::Unit::TestCase
     # 3.2
     context "proxy ticket" do
       setup do
-        @pt = ProxyTicket.new(@test_service_url)
-        @pt.save!(@redis)
+        @pt = ProxyTicket.create!(@test_service_url, @redis)
       end
 
       # 3.2.1
@@ -751,7 +747,6 @@ class CasServerTest < Test::Unit::TestCase
         # MUST
         should "be valid for only one attempt" do
           assert ProxyTicket.validate!(@pt.ticket, @redis)
-
           assert !ProxyTicket.validate!(@pt.ticket, @redis)
         end
 
@@ -797,8 +792,7 @@ class CasServerTest < Test::Unit::TestCase
     #3.5
     context "login ticket" do
       setup do
-        @lt = LoginTicket.new
-        @lt.save!(@redis)
+        @lt = LoginTicket.create! @redis
       end
 
       # 3.5.1
@@ -808,7 +802,6 @@ class CasServerTest < Test::Unit::TestCase
 
         must "be valid for only one attempt" do
           assert LoginTicket.validate!(@lt.ticket, @redis)
-
           assert !LoginTicket.validate!(@lt.ticket, @redis)
         end
 
@@ -821,8 +814,7 @@ class CasServerTest < Test::Unit::TestCase
     # 3.6
     context "ticket-granting cookie" do
       setup do
-        @tgt = TicketGrantingTicket.new("quentin")
-        @tgt.save!(@redis)
+        @tgt = TicketGrantingTicket.create!("quentin", @redis)
       end
       # 3.6.1
       context "properties" do
@@ -852,9 +844,9 @@ class CasServerTest < Test::Unit::TestCase
     context "ticket and ticket-granting cookie character set" do
       setup do
         @tickets = [
-          LoginTicket.new,
+          LoginTicket.new(1, LoginTicket.generate_id),
           ServiceTicket.new("http://example.com", "foo"),
-          TicketGrantingTicket.new("foo")
+          TicketGrantingTicket.new("foo", TicketGrantingTicket.generate_id)
         ]
       end
       # MUST
