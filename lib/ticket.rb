@@ -35,8 +35,6 @@ class Ticket < Struct.new(:value, :id)
   end
   extend ClassMethods
 
-  set_ttl INFINITE
-
   def save!(store)
     store[id] = value
     store.expire id, ttl if ttl < INFINITE
