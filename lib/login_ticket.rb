@@ -1,34 +1,12 @@
-class LoginTicket
-  class << self
-    def validate!(ticket, store)
-      if store.exists ticket
-        store.del ticket
-        new
-      end
-    end
-    
-    def create!(store)
-      lt =  self.new
-      lt.save!(store)
-      lt
-    end
+class LoginTicket < Ticket
 
-    def expire_time
-      300
-    end
+  def self.create!(store)
+    super 1, store
+  end
+  def self.generate_id
+    "LT-#{ rand 100_000_000_000_000_000 }"
   end
 
-  def ticket
-    @ticket ||= "LT-#{rand(100000000000000000)}".to_s
-  end
+  set_ttl 300
 
-  def remaining_time(store)
-    store.ttl ticket
-  end
-
-
-  def save!(store)
-    store[ticket] = 1
-    store.expire ticket, self.class.expire_time
-  end
 end
