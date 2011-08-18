@@ -38,5 +38,12 @@ class TicketGrantingTicketTest < Test::Unit::TestCase
       assert_not_nil @tgt
       assert TicketGrantingTicket.validate(@tgt.ticket, @redis)
     end
+
+    should 'expire' do
+      @tgt = TicketGrantingTicket.create!('quentin', @redis)
+      ttl = @redis.ttl(@tgt.ticket)
+      assert ttl >= 299 && ttl <= 300
+    end
+
   end
 end
