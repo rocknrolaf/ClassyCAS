@@ -1,8 +1,8 @@
 source "http://rubygems.org"
 gem 'sinatra', '1.1'
 gem 'redis', '~>2.0'
-gem 'addressable', '~>2.2.2'
-gem 'nokogiri', '~>1.4.4'
+gem 'addressable', '~>2.2.6'
+gem 'nokogiri', '~>1.5.0'
 gem 'rack', '~>1.2.0'
 gem 'rack-flash'
 gem 'warden'
