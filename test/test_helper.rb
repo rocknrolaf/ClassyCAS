@@ -18,9 +18,8 @@ end
 
 require_relative "../lib/classy_cas"
 
-Server = ClassyCAS::Builder.new :sites => %w[ http://example.org http://example.com ]
-Server.use Rack::Session::Cookie
-Server.set :environment, :test
+ClassyCAS::Server.client_sites = %w[ http://example.org http://example.com ]
+ClassyCAS::Server.set :environment, :test
 
 User = Struct.new(:login, :password)
 Warden::Strategies.add(:simple_strategy) do
