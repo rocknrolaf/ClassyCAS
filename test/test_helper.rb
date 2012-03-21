@@ -1,20 +1,15 @@
 $:.unshift(File.dirname(__FILE__) + "/../")
 
 require 'test/unit'
+
 require 'rubygems'
-require 'bundler'
+require 'bundler/setup'
 Bundler.require :test, :default
 
-require 'shoulda'
-require 'ruby-debug'
-require 'redis'
 require "rack/test"
-require 'webrat'
 # require 'rr'
 
-Webrat.configure do |config|
-  config.mode = :rack
-end
+Webrat.configure { |config| config.mode = :rack }
 
 Shoulda::ClassMethods.module_eval do
   alias :must :should
@@ -23,14 +18,9 @@ end
 
 require_relative "../lib/classy_cas"
 
-class ClassyCAS::Server
-  set :environment, :test
-  
-  configure :test do    
-    set :redis, Proc.new { Redis.new()}
-    set :client_sites, [ "http://example.org", 'http://example.com']
-  end
-end
+Server = ClassyCAS::Builder.new :sites => %w[ http://example.org http://example.com ]
+Server.use Rack::Session::Cookie
+Server.set :environment, :test
 
 User = Struct.new(:login, :password)
 Warden::Strategies.add(:simple_strategy) do

@@ -1,4 +1,5 @@
 source "http://rubygems.org"
+
 gem 'sinatra', '1.1'
 gem 'redis', '~>2.0'
 gem 'addressable', '~>2.2.6'
@@ -18,11 +19,12 @@ end
 group :test, :development do
   gem "shotgun"
   gem "ruby-debug", :platforms => [:ruby_18]
-  gem "ruby-debug19", :platforms => [:ruby_19]
+  # not working with ruby 1.9.3 :/
+  # gem "ruby-debug19", :platforms => [:ruby_19]
 end
 
 group :test do
   gem 'webrat'
-  gem 'shoulda'
+  gem 'shoulda', '~>2.11'
 end
 

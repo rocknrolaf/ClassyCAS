@@ -24,39 +24,71 @@ require_relative 'ticket_granting_ticket'
 require_relative 'strategies'
 
 module ClassyCAS
+
+  module Builder
+
+    def new(opts = {})
+      app = Class.new  opts[:super]  || ClassyCAS::Server
+
+      app.set :root,   opts[:root]   || File.dirname(__FILE__)
+      app.set :public, opts[:public] || File.expand_path('../public', app.root)
+      app.set :views,  opts[:views]  || File.expand_path('views', app.root)
+      app.set :redis,  opts[:redis]  || Proc.new { Redis.new }
+
+      app.set :client_sites, opts[:client_sites] ||
+        %w[ http://localhost:3001 http://localhost:3002 ]
+
+        opts.fetch(:use, []).each do |(middleware, *args)|
+        if block = Proc === args.last ? args.pop : nil
+          app.use middleware, *args, &block
+        else
+          app.use middleware, *args
+        end
+      end
+
+      flash_config = {:accessorize => [:notice, :error]}.merge opts.fetch(:flash, {})
+      app.use Rack::Flash, flash_config
+
+      cas_defaults = {:strategies => [:simple], :action => 'login'}.merge opts.fetch(:warden, {})
+      app.use Warden::Manager do |manager|
+        manager.failure_app   = app
+        manager.default_scope = :cas
+        manager.scope_defaults  :cas, cas_defaults
+      end
+
+      return app
+    end
+    module_function :new
+
+  end
+
   class Server < Sinatra::Base
-    set :redis, Proc.new { Redis.new } unless settings.respond_to?(:redis)
-    set :client_sites, [ "http://localhost:3001", 'http://localhost:3002'] unless settings.respond_to?(:client_sites)
+    URI = Addressable::URI
 
-    set :root, File.dirname(__FILE__)
-    set :public, File.join(root, "/../public")
-
-    set :warden_strategies, [:simple] unless settings.respond_to?(:warden_strategies)
-
-    use Rack::Session::Cookie
-    use Rack::Flash, :accessorize => [:notice, :error]
-    use Warden::Manager do |manager|
-      manager.failure_app = self
-      manager.default_scope = :cas
-
-      manager.scope_defaults(:cas,
-        :strategies => settings.warden_strategies,
-        :action => "login"
-      )
+    class << self
+      alias_method :new_instance, :new
     end
 
-    configure :development do
-      set :dump_errors
+    def self.new(opts = {})
+      server = Builder.new opts
+      server.use Rack::Session::Cookie
+      server.new_instance
     end
 
-    get "/" do
-      redirect "/login"
+    configure(:development) { set :dump_errors }
+
+    before do
+      raise 'No Session!' unless request.env.member? 'rack.session'
     end
 
-    get "/login" do
-      @service_url = Addressable::URI.parse(params[:service])
-      @renew = [true, "true", "1", 1].include?(params[:renew])
-      @gateway = [true, "true", "1", 1].include?(params[:gateway])
+    get '/' do
+      redirect '/login'
+    end
+
+    get '/login' do
+      @service_url = URI.parse params[:service]
+      @renew   = [true, "true", "1", 1].include? params[:renew]
+      @gateway = [true, "true", "1", 1].include? params[:gateway]
 
       if @renew
         @login_ticket = LoginTicket.create!(settings.redis)
@@ -183,7 +215,7 @@ module ClassyCAS
 
     private
       def warden
-        request.env["warden"]
+        request.env['warden']
       end
 
       def sso_session

@@ -16,7 +16,7 @@ class CasServerTest < Test::Unit::TestCase
   end
 
   def app
-    app ||= ClassyCAS::Server
+    app ||= Server
   end
 
   def sso_session_for(username)
