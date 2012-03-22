@@ -7,10 +7,8 @@ class Ticket < Struct.new(:value, :id)
 
     attr_accessor :ttl
     alias_method :set_ttl, :ttl=
-
-    def prefix
-      raise NotImplementedError
-    end
+    attr_accessor :prefix
+    alias_method :set_prefix, :prefix=
 
     def generate_id
       "#{ prefix }#{ rand 100_000_000_000_000_000 }"
@@ -30,6 +28,7 @@ class Ticket < Struct.new(:value, :id)
 
     def inherited(base)
       base.ttl = INFINITE
+      base.prefix = base.name.split('::').last.gsub(/[^A-Z]/, '') << '-'
     end
 
   end

@@ -8,8 +8,11 @@ GEM
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
     nokogiri (1.5.2)
-    rack (1.2.5)
-    rack-flash (0.1.2)
+    rack (1.4.1)
+    rack-flash3 (1.0.0)
+      rack
+      rack
+    rack-protection (1.2.0)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
@@ -23,9 +26,10 @@ GEM
     shotgun (0.9)
       rack (>= 1.0)
     shoulda (2.11.3)
-    sinatra (1.1.0)
-      rack (~> 1.1)
-      tilt (~> 1.1)
+    sinatra (1.3.2)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
+      tilt (~> 1.3, >= 1.3.3)
     tilt (1.3.3)
     warden (1.1.1)
       rack (>= 1.0)
@@ -42,12 +46,12 @@ DEPENDENCIES
   addressable (~> 2.2.6)
   backports
   nokogiri (~> 1.5.0)
-  rack (~> 1.2.0)
-  rack-flash
+  rack-flash3
+  rack-test
   redis (~> 2.0)
   ruby-debug
   shotgun
   shoulda (~> 2.11)
-  sinatra (= 1.1)
+  sinatra (~> 1.3.2)
   warden
   webrat

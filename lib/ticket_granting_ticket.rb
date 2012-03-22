@@ -2,9 +2,7 @@ class TicketGrantingTicket < Ticket
 
   alias_method :username, :value
 
-  def self.prefix
-    'TGC-'
-  end
+  set_prefix 'TGC-'
   set_ttl 300
 
   def to_cookie(domain, path = '/', opts = {})

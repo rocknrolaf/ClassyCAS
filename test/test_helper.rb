@@ -1,13 +1,10 @@
-$:.unshift(File.dirname(__FILE__) + "/../")
-
 require 'test/unit'
-
 require 'rubygems'
-require 'bundler/setup'
+require 'bundler'
 Bundler.require :test, :default
 
-require "rack/test"
-# require 'rr'
+$:.unshift File.expand_path('../..', __FILE__)
+require "lib/classy_cas"
 
 Webrat.configure { |config| config.mode = :rack }
 
@@ -16,13 +13,13 @@ Shoulda::ClassMethods.module_eval do
   alias :may :should
 end
 
-require_relative "../lib/classy_cas"
-
 ClassyCAS::Server.client_sites = %w[ http://example.org http://example.com ]
 ClassyCAS::Server.set :environment, :test
 
-User = Struct.new(:login, :password)
+User = Struct.new :login, :password
+
 Warden::Strategies.add(:simple_strategy) do
+
   def valid?
     params["username"] && params["password"]
   end
@@ -34,6 +31,7 @@ Warden::Strategies.add(:simple_strategy) do
     end
     fail!("Could not log in")
   end
+
 end
 
 module Test::Unit::Assertions
@@ -48,4 +46,3 @@ class Test::Unit::TestCase
   include Webrat::Matchers
   use Rack::Session::Cookie
 end
-
