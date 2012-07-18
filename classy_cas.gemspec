@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency('addressable', '~>2.2.6')
   s.add_dependency('nokogiri', '~>1.5.0')
   s.add_dependency('rack', '~>1.4.1')
-  s.add_dependency('rack-flash')
+  s.add_dependency('rack-flash3')
   if RUBY_VERSION < "1.9"
     s.add_dependency('backports')
     s.add_dependency('SystemTimer', "~>1.2")
